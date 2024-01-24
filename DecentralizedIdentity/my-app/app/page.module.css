@@ -1,0 +1,100 @@
+@font-face {
+  font-family: 'ReadexPro';
+  src: url('./ReadexPro.ttf') format('truetype');
+}
+
+.emailInput
+{
+  font-family: 'ReadexPro';
+  width: 600px;
+  height: 100px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  box-shadow: 0px 1px 5px 0px rgba(0, 0, 0, 0.1);
+  font-size: 15px;
+  color: rgba(0, 0, 0, 0.75);
+  text-align: center;
+}
+
+.emailInput::placeholder
+{
+  font-family: 'ReadexPro';
+  color: rgba(0, 0, 0, 0.5);
+  text-align:center;
+}
+
+.emailInput:focus
+{
+  box-shadow: none;
+  outline: none;
+}
+
+.divButton
+{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 25px;
+  position: relative;
+  top: 150px;
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
+.button
+{
+  width: 200px;
+  height: 60px;
+  background-color: transparent;
+  transition: 0.3s;
+  font-family: 'ReadexPro';
+  color: black;
+  border: 1px solid rgba(0, 0, 0, 0.25);
+  text-align: center;
+  border-radius: 5px;
+  font-weight: 600;
+}
+
+.button:hover
+{
+  background-color: black;
+  color: white;
+}
+
+.verify
+{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 15px;
+}
+
+.verify p
+{
+  font-weight: bold;
+  font-size: 20px;
+}
+
+.verifyEmail
+{
+  background-color: white;
+  border: 1px solid rgba(0, 0, 0, 0.25);
+  border-radius: 10px;
+  width: 400;
+  height: 75px;
+  color: rgba(0, 0, 0, 0.75);
+  text-align: center;
+}
+
+.verifyEmail:focus
+{
+  outline: none;
+}
+
+.verifyEmail::placeholder
+{
+  text-align: center;
+}

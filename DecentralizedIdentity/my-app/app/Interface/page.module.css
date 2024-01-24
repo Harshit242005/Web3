@@ -1,0 +1,65 @@
+.mainBody
+{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 25px;
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+.keys {
+    display: flex;
+    flex-direction: column;
+    justify-content: left;
+    align-items: last baseline;
+    gap: 0px;
+}
+
+.keys p
+{
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.keysHeader
+{
+    font-size: 24px;
+    font-family: bold;
+    text-decoration: underline 2px solid black;
+}
+
+
+.components
+{
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.navigationButtons
+{
+    width: 100%;
+    padding: 0;
+    margin: 0;
+}
+
+.navigationButtons button
+{
+    width: 50%;
+    height: 50px;
+    background-color: transparent;
+    font-size: 20px;
+    font-weight: bold;
+    border: none;
+    cursor: pointer;
+}
+
+
+.selectedButton
+{
+    background-color: black;
+    color: white;
+    outline: none;
+}

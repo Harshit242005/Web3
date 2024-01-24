@@ -1,0 +1,60 @@
+.mainBody
+{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.generateKeys
+{
+    width: 250px;
+    height: 60px;
+    background-color: transparent;
+    border: 1px solid rgba(0, 0, 0, 0.5);
+    border-radius: 5px;
+    text-align: center;
+    font-size: 16px;
+    font-weight: 600;
+    transition: 0.3s;
+    cursor: pointer;
+}
+
+.generateKeys:hover
+{
+    background-color: black;
+    color: white;
+}
+
+.publicKey, .privateKey
+{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 25px;
+}
+
+.publicKey button, .privateKey button
+{
+    width: 200px;
+    height: 50px;
+    background-color: transparent;
+    color:black;
+    font-size: 15px;
+    font-weight: bold;
+    border: 1px solid black;
+    transition: 0.3s;
+    border-radius: 2px;
+    cursor: pointer;
+}
+
+.publicKey button:hover
+{
+    background-color: black;
+}
+
+.privateKey button:hover
+{
+    background-color: black;
+}

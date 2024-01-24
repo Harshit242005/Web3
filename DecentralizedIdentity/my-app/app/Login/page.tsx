@@ -1,0 +1,91 @@
+'use client';
+import React, { useState } from "react";
+import axios from "axios";
+import { useRouter } from 'next/navigation';
+import CryptoJS from 'crypto-js';
+import styles from './page.module.css';
+import { Wallet } from 'ethers';
+const Login: React.FC = () => {
+    const navigation = useRouter();
+    const [invalidKey, setInvalidKey] = useState('');
+    const [privateKey, setPrivateKey] = useState('');
+    const [publicKeyToCheck, setPublicKeyToCheck] = useState('');
+    const [isMatch, setIsMatch] = useState(false);
+
+    const publicSecretKey = 'public';
+    const privateSecretKey = 'private';
+
+    const handleCheckKey = () => {
+        try {
+            const wallet = new Wallet(privateKey);
+            console.log(`wallet is: ${wallet}`);
+            const derivedPublicKey = wallet.address;
+            console.log(`derived public key from the private key: ${derivedPublicKey}`)
+            console.log(`my public key ${publicKeyToCheck}`);
+            // Check if the derived public key matches the provided public key
+            setIsMatch(derivedPublicKey === publicKeyToCheck);
+        } catch (error) {
+            console.error('Error checking keys:', error);
+            setIsMatch(false); // Set to false in case of any error
+        }
+    };
+
+    const sendEncryptedPrivateKey = async () => {
+        // Encrypt the private key before sending
+        const encryptedPrivateKey = CryptoJS.AES.encrypt(privateKey, 'privatekeyEncryption').toString();
+
+        try {
+            const response = await axios.post('http://localhost:3001/checkKey', { encryptedPrivateKey });
+
+            setPrivateKey(''); 
+            console.log(response.data);
+
+            const { message } = response.data;
+            console.log(`private key verification status: ${message}`);
+
+            //const encryptedPrivateKeySend = CryptoJS.AES.encrypt(privateKey, privateSecretKey).toString();
+            //const encryptedPublicKeySend = CryptoJS.AES.encrypt(publicKeyToCheck, publicSecretKey).toString();
+            
+            if (response.status === 200 && isMatch) {
+                navigation.push(`/Interface?privateKey=${privateKey}&publicKey=${publicKeyToCheck}`)
+            } else {
+                setInvalidKey(message);
+            }
+        } catch (error) {
+            console.error('Error sending request:', error);
+            // Handle error, setInvalidKey, or show an error message to the user
+        }
+    }
+
+    return (
+        <div className={styles.mainBody}>
+            <h1>Type Private key for login...</h1>
+            <p style={{ color: 'red' }}>{invalidKey}</p>
+            <div className={styles.mainBody}>
+                {isMatch ? (
+                    <p>Public key matches the derived public key from the private key!</p>
+                ) : (
+                    <p>Public key does not match the derived public key from the private key.</p>
+                )}
+                <input
+                    type="text"
+                    className={styles.privateKeySet}
+                    value={privateKey}
+                    onChange={(e) => setPrivateKey(e.target.value)}
+                    placeholder="Type private key..."
+                />
+                <input
+                    type="text"
+                    className={styles.privateKeySet}
+                    value={publicKeyToCheck}
+                    onChange={(e) => setPublicKeyToCheck(e.target.value)}
+                    placeholder="Type public key to check..."
+                />
+                <button className={styles.sendKeys} onClick={handleCheckKey}>Check Key</button>
+                {/* directly adding the interface with the public key and cheking if they cross each other */}
+                <button disabled={!isMatch} className={styles.sendKeys} onClick={sendEncryptedPrivateKey}>Check</button>
+            </div>
+        </div>
+    );
+}
+export default Login;
