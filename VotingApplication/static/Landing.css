@@ -1,0 +1,22 @@
+.login_signup
+{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 25px;
+    position: relative;
+    top: 250px;
+}
+
+.login_signup a button
+{
+    width: 250px;
+    height: 60px;
+    background-color: black;
+    border: 2px solid rgba(0, 0, 0, 0.5);
+    border-radius: 10px;
+    text-align: center;
+    font-weight: bold;
+    color: white;
+}

@@ -1,0 +1,49 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voting Interface</title>
+</head>
+<body>
+    <div>
+        <form action="/vote" method="post">
+            <!-- Hidden input for user_data -->
+            <input type="hidden" name="user_data" value="{{ user_data }}">
+            <input type="hidden" name="account" value="{{ account }}">
+            <input type="hidden" name="privateKey" value="{{ privateKey }}">
+            <!-- Hidden input for partyname -->
+            <input type="hidden" data-partyname="" id="party" name="partyname">
+            
+            <!-- Buttons for selecting parties -->
+            <div class="AAP">
+                <button type="button" onclick="selectParty('AAP')">Vote for AAP</button>
+            </div>
+            <div class="BJP">
+                <button type="button" onclick="selectParty('BJP')">Vote for BJP</button>
+            </div>
+            <div class="CONGRESS">
+                <button type="button" onclick="selectParty('CONGRESS')">Vote for Congress</button>
+            </div>
+            
+            <!-- Submit button -->
+            <button type="submit" {% if has_vote %}disabled{% endif %}>Vote</button>
+        </form>
+        
+        <!-- Form to show results -->
+        <form action="/results" method="post">
+            <input type="hidden" name="user_data" value="{{ user_data }}">
+            <input type="hidden" name="account" value="{{ account }}">
+            <button type="submit" {% if has_result %}disabled{% endif %}>Show Result</button>
+        </form>
+    </div>
+    <script>
+        // Function to select a party and set the data-partyname attribute
+        function selectParty(name) {
+            const partyName = document.getElementById('party');
+            partyName.setAttribute('data-partyname', name);
+            // Update the user_data input value with the current user_data
+            document.querySelector('input[name="user_data"]').value = "{{ user_data }}";
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,28 @@
+<!-- Signup.html -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Signup page</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='Signup.css') }}">
+</head>
+<body>
+    <h1>Signup</h1>
+    <form action="/process_signup" method="POST">
+        <input type="text" placeholder="Associated private key..." name="private_key" required>
+        <input type="text" name="name" placeholder="Type name..." required>
+        <input type="email" name="email" placeholder="Type email..." required>
+        <input type="text" name="contact" placeholder="Type contact number..." required>
+        <input type="int" name="age" placeholder="Type age..." min="18" required>
+        <select name="Gender" required>
+            <option value="Male">Male</option>
+            <option value="Female">Female</option>
+            <option value="Transgender">Transgender</option>
+        </select>
+        <input type="text" name="location" placeholder="Type location..." required>
+        <button type="submit">Signup</button>
+    </form>
+</body>
+</html>

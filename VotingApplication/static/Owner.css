@@ -1,0 +1,64 @@
+body
+{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    overflow-y: hidden;
+    overflow-x: hidden;
+}
+
+.Address-info
+{
+    position: relative;
+    top: 100px;
+}
+
+.Address-info form
+{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 25px;
+}
+
+.Address-info form input
+{
+    width: 800px;
+    padding-left: 10px;
+    height: 80px;
+    border: 1px solid rgba(0, 0, 0, 0.25);
+    border-radius: 10px;
+    background-color: transparent;
+    font-weight: 600;
+}
+
+.Address-info form input:focus
+{
+    outline: none;
+}
+
+.Address-info form input::placeholder
+{
+    text-align: left;
+    padding-left: 10px;
+}
+
+.Address-info form button
+{
+    width: 250px;
+    height: 60px;
+    border: none;
+    background-color: black;
+    color: white;
+    font-size: 600;
+    font-weight: bold;
+    text-align: center;
+}
+
+.Address-info form button:focus
+{
+    outline: none;
+}

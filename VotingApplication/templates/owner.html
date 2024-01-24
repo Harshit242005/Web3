@@ -1,0 +1,20 @@
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Owner access</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='Owner.css') }}">
+</head>
+
+<body>
+    <div class="Address-info"> 
+    <h1>Welcome back, Election Board</h1>
+    <form action="/announce" method="post">
+        <input type="text" name="privateKey" placeholder="Type private key..." autocomplete="off">
+        <button style="color: white;" type="submit" {% if has_result %}disabled{% endif %}>Announce Result</button>
+    </form>
+    </div>
+</body>
+
+</html>

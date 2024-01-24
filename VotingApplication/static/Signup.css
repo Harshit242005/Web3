@@ -1,0 +1,68 @@
+/* css code for the signup page */
+
+body{
+    display: flex;
+    flex-direction: column;
+    justify-content: left;
+    align-items: flex-start;
+    gap: 10px;
+}
+
+form
+{
+    display: flex;
+    flex-direction: column;
+    justify-content: left;
+    align-items: flex-start;
+    gap: 25px;
+}
+
+form input
+{
+    width: 600px;
+    height: 60px;
+    background-color: transparent;
+    border: 1px solid rgba(0, 0, 0, 0.25);
+    padding-left: 10px;
+    font-weight: 600;
+
+}
+
+form input:focus
+{
+    outline: none;
+}
+
+form select
+{
+    background-color: black;
+    color: white;
+    width: 400px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    text-align: center;
+    height: 50px;
+}
+
+form input select:focus
+{
+    outline: none;
+}
+
+form button
+{
+    background-color: black;
+    color: white;
+    width: 250px;
+    height: 60px;
+    margin-top: 50px;
+    text-align: center;
+    font-family: bold;
+    border: none;
+    border-radius: 10px;
+}
+
+form button:focus
+{
+    outline: none;
+}

@@ -1,0 +1,1 @@
+register_contract_address = "0x6271B1D29Fc37CAbDfACF4643a005eFF8c713bF7"
