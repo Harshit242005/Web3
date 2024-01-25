@@ -52,7 +52,7 @@
 
 .inputBox::placeholder
 {
-    text-transform: capitalize;
+    font-weight: 400;
 }
 
 .inputBox:focus

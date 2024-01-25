@@ -9,9 +9,9 @@ const contract_abi = [
 		"inputs": [
 			{
 				"indexed": true,
-				"internalType": "address",
+				"internalType": "string",
 				"name": "userAddress",
-				"type": "address"
+				"type": "string"
 			},
 			{
 				"indexed": false,
@@ -34,9 +34,9 @@ const contract_abi = [
 		"inputs": [
 			{
 				"indexed": true,
-				"internalType": "address",
+				"internalType": "string",
 				"name": "userAddress",
-				"type": "address"
+				"type": "string"
 			},
 			{
 				"indexed": false,
@@ -59,9 +59,9 @@ const contract_abi = [
 		"inputs": [
 			{
 				"indexed": true,
-				"internalType": "address",
+				"internalType": "string",
 				"name": "userAddress",
-				"type": "address"
+				"type": "string"
 			},
 			{
 				"indexed": false,
@@ -84,34 +84,9 @@ const contract_abi = [
 		"inputs": [
 			{
 				"indexed": true,
-				"internalType": "address",
-				"name": "userAddress",
-				"type": "address"
-			},
-			{
-				"indexed": false,
 				"internalType": "string",
-				"name": "newImage",
-				"type": "string"
-			},
-			{
-				"indexed": false,
-				"internalType": "bool",
-				"name": "success",
-				"type": "bool"
-			}
-		],
-		"name": "ImageUpdated",
-		"type": "event"
-	},
-	{
-		"anonymous": false,
-		"inputs": [
-			{
-				"indexed": true,
-				"internalType": "address",
 				"name": "userAddress",
-				"type": "address"
+				"type": "string"
 			},
 			{
 				"indexed": false,
@@ -132,9 +107,9 @@ const contract_abi = [
 	{
 		"inputs": [
 			{
-				"internalType": "address",
+				"internalType": "string",
 				"name": "_userAddress",
-				"type": "address"
+				"type": "string"
 			},
 			{
 				"internalType": "string",
@@ -144,11 +119,6 @@ const contract_abi = [
 			{
 				"internalType": "string",
 				"name": "_username",
-				"type": "string"
-			},
-			{
-				"internalType": "string",
-				"name": "_image",
 				"type": "string"
 			},
 			{
@@ -175,9 +145,9 @@ const contract_abi = [
 	{
 		"inputs": [
 			{
-				"internalType": "address",
+				"internalType": "string",
 				"name": "_userAddress",
-				"type": "address"
+				"type": "string"
 			}
 		],
 		"name": "getContactByAddress",
@@ -194,9 +164,9 @@ const contract_abi = [
 	{
 		"inputs": [
 			{
-				"internalType": "address",
+				"internalType": "string",
 				"name": "_userAddress",
-				"type": "address"
+				"type": "string"
 			}
 		],
 		"name": "getDOBByAddress",
@@ -213,9 +183,9 @@ const contract_abi = [
 	{
 		"inputs": [
 			{
-				"internalType": "address",
+				"internalType": "string",
 				"name": "_userAddress",
-				"type": "address"
+				"type": "string"
 			}
 		],
 		"name": "getEmailByAddress",
@@ -232,28 +202,9 @@ const contract_abi = [
 	{
 		"inputs": [
 			{
-				"internalType": "address",
-				"name": "_userAddress",
-				"type": "address"
-			}
-		],
-		"name": "getImageByAddress",
-		"outputs": [
-			{
 				"internalType": "string",
-				"name": "",
-				"type": "string"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
 				"name": "_userAddress",
-				"type": "address"
+				"type": "string"
 			}
 		],
 		"name": "getUsernameByAddress",
@@ -307,9 +258,9 @@ const contract_abi = [
 	{
 		"inputs": [
 			{
-				"internalType": "address",
+				"internalType": "string",
 				"name": "_userAddress",
-				"type": "address"
+				"type": "string"
 			},
 			{
 				"internalType": "string",
@@ -325,9 +276,9 @@ const contract_abi = [
 	{
 		"inputs": [
 			{
-				"internalType": "address",
+				"internalType": "string",
 				"name": "_userAddress",
-				"type": "address"
+				"type": "string"
 			},
 			{
 				"internalType": "string",
@@ -343,9 +294,9 @@ const contract_abi = [
 	{
 		"inputs": [
 			{
-				"internalType": "address",
+				"internalType": "string",
 				"name": "_userAddress",
-				"type": "address"
+				"type": "string"
 			},
 			{
 				"internalType": "string",
@@ -361,27 +312,9 @@ const contract_abi = [
 	{
 		"inputs": [
 			{
-				"internalType": "address",
-				"name": "_userAddress",
-				"type": "address"
-			},
-			{
 				"internalType": "string",
-				"name": "_newImage",
-				"type": "string"
-			}
-		],
-		"name": "updateImage",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
 				"name": "_userAddress",
-				"type": "address"
+				"type": "string"
 			},
 			{
 				"internalType": "string",
@@ -397,17 +330,17 @@ const contract_abi = [
 	{
 		"inputs": [
 			{
-				"internalType": "address",
+				"internalType": "string",
 				"name": "",
-				"type": "address"
+				"type": "string"
 			}
 		],
 		"name": "users",
 		"outputs": [
 			{
-				"internalType": "address",
+				"internalType": "string",
 				"name": "userAddress",
-				"type": "address"
+				"type": "string"
 			},
 			{
 				"internalType": "string",
@@ -417,11 +350,6 @@ const contract_abi = [
 			{
 				"internalType": "string",
 				"name": "username",
-				"type": "string"
-			},
-			{
-				"internalType": "string",
-				"name": "image",
 				"type": "string"
 			},
 			{
@@ -443,7 +371,7 @@ const contract_abi = [
 
 
 // address for the contract
-const contractAddress = "0x577Fe16d872b6FFeC4f9d04A3eb71645cbbd8501";
+const contractAddress = "0x415065cC7b943E27982772AcefA172d5E292e149";
 // contract remote nodes 
 const web3 = new Web3('https://goerli.infura.io/v3/b4e87e31b3df4aba9f33d76ec45a139d'); 
 // contract instance creation
@@ -452,9 +380,9 @@ const interface_1_contract = new web3.eth.Contract(contract_abi, contractAddress
 const privateKeySign = '7fd14eed812ee800b2e7d536090d5d514a2341bea36b04efba90a8d9abaf94b1';
 const account_address = '0x5780326e9F221afd01253C954b453ccCf4f2F30E'
 
-function InitialStruct(publicAddress, email, username, image, contact, dob, privateKey) {
+function InitialStruct(publicAddress, email, username, contact, dob, privateKey) {
     // calling the deployed contract function
-    const initalStructABI = interface_1_contract.methods.createUser(publicAddress, email, username, image, contact, dob, privateKey).encodeABI();
+    const initalStructABI = interface_1_contract.methods.createUser(publicAddress, email, username, contact, dob, privateKey).encodeABI();
     // transaction data and calling contract
     const transactionObject = {
         from: account_address, 

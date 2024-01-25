@@ -442,6 +442,8 @@ contract_abi = [
 
 
 # deploying the contract
+
+
 # Ethereum node endpoint (replace with your own endpoint)
 ethereum_node_url = "https://goerli.infura.io/v3/b4e87e31b3df4aba9f33d76ec45a139d"
 

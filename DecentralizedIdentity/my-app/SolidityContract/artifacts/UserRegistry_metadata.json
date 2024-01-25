@@ -10,9 +10,9 @@
 				"inputs": [
 					{
 						"indexed": true,
-						"internalType": "address",
+						"internalType": "string",
 						"name": "userAddress",
-						"type": "address"
+						"type": "string"
 					},
 					{
 						"indexed": false,
@@ -35,9 +35,9 @@
 				"inputs": [
 					{
 						"indexed": true,
-						"internalType": "address",
+						"internalType": "string",
 						"name": "userAddress",
-						"type": "address"
+						"type": "string"
 					},
 					{
 						"indexed": false,
@@ -60,9 +60,9 @@
 				"inputs": [
 					{
 						"indexed": true,
-						"internalType": "address",
+						"internalType": "string",
 						"name": "userAddress",
-						"type": "address"
+						"type": "string"
 					},
 					{
 						"indexed": false,
@@ -85,34 +85,9 @@
 				"inputs": [
 					{
 						"indexed": true,
-						"internalType": "address",
-						"name": "userAddress",
-						"type": "address"
-					},
-					{
-						"indexed": false,
 						"internalType": "string",
-						"name": "newImage",
-						"type": "string"
-					},
-					{
-						"indexed": false,
-						"internalType": "bool",
-						"name": "success",
-						"type": "bool"
-					}
-				],
-				"name": "ImageUpdated",
-				"type": "event"
-			},
-			{
-				"anonymous": false,
-				"inputs": [
-					{
-						"indexed": true,
-						"internalType": "address",
 						"name": "userAddress",
-						"type": "address"
+						"type": "string"
 					},
 					{
 						"indexed": false,
@@ -133,9 +108,9 @@
 			{
 				"inputs": [
 					{
-						"internalType": "address",
+						"internalType": "string",
 						"name": "_userAddress",
-						"type": "address"
+						"type": "string"
 					},
 					{
 						"internalType": "string",
@@ -145,11 +120,6 @@
 					{
 						"internalType": "string",
 						"name": "_username",
-						"type": "string"
-					},
-					{
-						"internalType": "string",
-						"name": "_image",
 						"type": "string"
 					},
 					{
@@ -176,9 +146,9 @@
 			{
 				"inputs": [
 					{
-						"internalType": "address",
+						"internalType": "string",
 						"name": "_userAddress",
-						"type": "address"
+						"type": "string"
 					}
 				],
 				"name": "getContactByAddress",
@@ -195,9 +165,9 @@
 			{
 				"inputs": [
 					{
-						"internalType": "address",
+						"internalType": "string",
 						"name": "_userAddress",
-						"type": "address"
+						"type": "string"
 					}
 				],
 				"name": "getDOBByAddress",
@@ -214,9 +184,9 @@
 			{
 				"inputs": [
 					{
-						"internalType": "address",
+						"internalType": "string",
 						"name": "_userAddress",
-						"type": "address"
+						"type": "string"
 					}
 				],
 				"name": "getEmailByAddress",
@@ -233,28 +203,9 @@
 			{
 				"inputs": [
 					{
-						"internalType": "address",
-						"name": "_userAddress",
-						"type": "address"
-					}
-				],
-				"name": "getImageByAddress",
-				"outputs": [
-					{
 						"internalType": "string",
-						"name": "",
-						"type": "string"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "address",
 						"name": "_userAddress",
-						"type": "address"
+						"type": "string"
 					}
 				],
 				"name": "getUsernameByAddress",
@@ -308,9 +259,9 @@
 			{
 				"inputs": [
 					{
-						"internalType": "address",
+						"internalType": "string",
 						"name": "_userAddress",
-						"type": "address"
+						"type": "string"
 					},
 					{
 						"internalType": "string",
@@ -326,9 +277,9 @@
 			{
 				"inputs": [
 					{
-						"internalType": "address",
+						"internalType": "string",
 						"name": "_userAddress",
-						"type": "address"
+						"type": "string"
 					},
 					{
 						"internalType": "string",
@@ -344,9 +295,9 @@
 			{
 				"inputs": [
 					{
-						"internalType": "address",
+						"internalType": "string",
 						"name": "_userAddress",
-						"type": "address"
+						"type": "string"
 					},
 					{
 						"internalType": "string",
@@ -362,27 +313,9 @@
 			{
 				"inputs": [
 					{
-						"internalType": "address",
-						"name": "_userAddress",
-						"type": "address"
-					},
-					{
 						"internalType": "string",
-						"name": "_newImage",
-						"type": "string"
-					}
-				],
-				"name": "updateImage",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "address",
 						"name": "_userAddress",
-						"type": "address"
+						"type": "string"
 					},
 					{
 						"internalType": "string",
@@ -398,17 +331,17 @@
 			{
 				"inputs": [
 					{
-						"internalType": "address",
+						"internalType": "string",
 						"name": "",
-						"type": "address"
+						"type": "string"
 					}
 				],
 				"name": "users",
 				"outputs": [
 					{
-						"internalType": "address",
+						"internalType": "string",
 						"name": "userAddress",
-						"type": "address"
+						"type": "string"
 					},
 					{
 						"internalType": "string",
@@ -418,11 +351,6 @@
 					{
 						"internalType": "string",
 						"name": "username",
-						"type": "string"
-					},
-					{
-						"internalType": "string",
-						"name": "image",
 						"type": "string"
 					},
 					{
@@ -468,11 +396,11 @@
 	},
 	"sources": {
 		"Interface.sol": {
-			"keccak256": "0x78397b6db60c230cd76090707df352599d326d47157b0c0e9215def4ed1d435d",
+			"keccak256": "0xa1176982d6d19cad445eadb5fc64f4fa9ec035c500f37c4e1c15978ad1b7f6cc",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://0923ea59fc1712b7d2cfab573848e94e237c8f2279baf5979e7f919ae7a29a15",
-				"dweb:/ipfs/QmTcDrwPBfxeYnDGowyZE5ASGGnNRx5oiNWRkQCjLf5YLc"
+				"bzz-raw://83fe049cca91a52bd896b6851fe9396522daeb3583b8c387ef2d17c8680ca5ee",
+				"dweb:/ipfs/QmRZ2NZhu1hnqPTH66BQ2bwXUQC4XdRVgsBiDQzx1Nzv1x"
 			]
 		}
 	},

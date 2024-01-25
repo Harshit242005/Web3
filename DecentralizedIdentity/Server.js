@@ -10,20 +10,16 @@ const createUser = require('./InitialStruct');
 const { InitialStruct } = createUser;
 const cors = require('cors');
 const app = express();
-const multer = require('multer');
+
 const fs = require('fs');
-const { Wallet } = require('ethers');
 const { enc, AES } = require('crypto-js');
-
+const Web3 = require('web3');
+const web3 = new Web3();
 const port = process.env.PORT || 3001;
-
 app.use(cors());
 
-// Set up multer storage for file uploads
-const storage = multer.memoryStorage();
-const upload = multer({ storage: storage });
 
-app.use(bodyParser.json());
+app.use(bodyParser.json({ limit: '50mb' }));
 
 require('dotenv').config(); // Load environment variables from .env
 
@@ -153,26 +149,18 @@ app.post('/checkKey', async (req, res) => {
 });
 
 // creating the user struct creating the endpoint
-app.post('/createStructUser', upload.single('Image'), async (req, res) => {
+app.post('/createStructUser', async (req, res) => {
     // getting the req data
     const fullName = req.body.FullName;
     const email = req.body.Email;
     const contact = req.body.Contact;
     const dob = req.body.DOB;
     const publicKey = req.body.PublicKey;
-    const privateKey = req.body.PrivateKey
-    let base64Image = ''; // storing the base64 of the image
-    // Access the file data from req.file
-    if (req.file) {
-        const imageBuffer = req.file.buffer;
-        base64Image = imageBuffer.toString('base64');
-    }
-    // consoling the values 
+    const privateKey = req.body.PrivateKey;
     console.log(fullName, email, contact, dob, publicKey, privateKey)
-    // calling the function for creating initial contract and mapping of keys
     try {
         // Call the InitialStruct function
-        const response = await InitialStruct(publicKey, email, fullName, base64Image, contact, dob, privateKey);
+        const response = await InitialStruct(publicKey, email, fullName, contact, dob, privateKey);
         // Send the response to the client based on the status and message
         res.status(response.status).json({ message: response.message });
     } catch (error) {
@@ -181,7 +169,6 @@ app.post('/createStructUser', upload.single('Image'), async (req, res) => {
         res.status(500).json({ message: 'Internal server error.' });
     }
 });
-
 // Start the server
 app.listen(port, () => {
     console.log(`Server is running on port ${port}`);
