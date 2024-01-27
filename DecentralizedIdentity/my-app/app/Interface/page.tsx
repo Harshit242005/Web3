@@ -47,10 +47,10 @@ const Interface: React.FC = () => {
                  className={selectedButton === 'Permission' ? styles.selectedButton : ''}
                 >Permission</button>
             </div>
-            <div className={styles.keys}>
+            {/* <div className={styles.keys}>
                 <p><span className={styles.keysHeader}>Public Key:</span> {publicKey}</p>
                 <p><span className={styles.keysHeader}>Private Key:</span> {privateKey}</p>
-            </div>
+            </div> */}
             <div className={styles.components}>
                 {/* rendering compoent on the button click */}
                 {/* Passing data as props for the components */}

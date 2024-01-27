@@ -2,12 +2,22 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const checkEmailExists = require('./InitialCheckup');
 const checkPrivateKeyExists = require('./FinalCheckup');
+
 const SendMail = require('./SendMail');
 const { generatePin, getVerificationPin, sendEmail } = SendMail; // Destructure the exported functions
+
 const SaveEmail = require('./SaveEmail');
 const { SaveEmailPrivateKey } = SaveEmail;
+
 const createUser = require('./InitialStruct');
 const { InitialStruct } = createUser;
+
+const details = require('./FetchDetails');
+const { GetDetails } = details;
+
+const updateValue = require('./Update');
+const { updateValueInContract } = updateValue
+
 const cors = require('cors');
 const app = express();
 
@@ -169,6 +179,56 @@ app.post('/createStructUser', async (req, res) => {
         res.status(500).json({ message: 'Internal server error.' });
     }
 });
+
+// fecthing the details on the get request
+app.get('/FetchDetails/:publicKey', async (req, res) => {
+    const publicKey = req.params.publicKey;
+    console.log(`public key is ${publicKey}`);
+    // calling details for functions 
+    const values = await GetDetails(publicKey);
+    // creating a object and passing details on it and sending that object as response 
+    const doc = {
+        'username': values.username,
+        'email': values.email,
+        'dob': values.dob,
+        'contact': values.contact
+    }
+    console.log(doc);
+    res.status(200).json({'document': doc});
+});
+
+app.post('/updateValue', async (req, res) => {
+    // handling the data
+    const valueType = req.body.valueType;
+    const value = req.body.value;
+    const publicKey = req.body.publicKey;
+    // apply a switch call for the function call that would send up some conditional function call
+    switch(valueType) {
+        case 'email':
+            // function call from update.js
+            const emailRespond = updateValueInContract('email', value, publicKey);
+            res(emailRespond);
+            break;
+        case 'fullName':
+            // function call from update.js
+            const nameResponsd =  updateValueInContract('fullName', value, publicKey);
+            res(nameResponsd);
+            break;
+        case 'contact':
+            // function call from update.js
+            const contactRespond = updateValueInContract('contact', value, publicKey);
+            res(contactRespond)
+            break;
+        case 'dob':
+            // function call from update.js
+            const dobRespond = updateValue('dob', value, publicKey);
+            res(dobRespond);
+            break;
+    }
+    // console.log(`value type is ${valueType} and value is ${value}`);
+    // res.status(200).json({'message': 'Value is updated'})
+});
+
 // Start the server
 app.listen(port, () => {
     console.log(`Server is running on port ${port}`);
