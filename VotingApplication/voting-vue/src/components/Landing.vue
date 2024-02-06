@@ -1,0 +1,310 @@
+<template>
+    <div>
+        <!-- Input and button section -->
+        <input class="emailInput" type="email" v-model="email" placeholder="Type email..." /><br />
+        <button @click="connectIdentity">Connect with identity</button>
+
+        <!-- Popup dialog for success -->
+        <div v-if="showSuccessPopup" class="successPopup">
+            <!-- Your success message or content goes here -->
+            <!-- here i need to add a cross icon that would close/hide this -->
+            <span class="closeIcon" @click="closeSuccessPopup">&#10006;</span>
+            <div class="successConnectedMessage">
+                Success! Identity connected.
+            </div>
+            <div>
+                <button @click="openAccountModal">Choose account for connecting</button>
+            </div>
+        </div>
+
+        <!-- Account modal -->
+        <div v-if="showAccountModal" class="accountModal">
+            <h2>Select an account</h2>
+            <div class="accounts-Options">
+                <!-- Display all accounts with radio buttons -->
+                <label v-for="account in accounts" :key="account" class="accountOption">
+                    <input type="radio" v-model="selectedAccount" :value="account" />
+                    {{ account }}
+                </label>
+            </div>
+
+            <button @click="connectWithSelectedAccount">Connect</button>
+            <button @click="closeAccountModal">Cancel</button>
+        </div>
+
+        <!-- another div for showing the private key for the input box and when we pass that in the input box
+        and approve it it would send them both private and public key for check -->
+        <!-- Div with input box and check button -->
+        <div v-if="showPrivateKeyInput" class="privateKeyInputContainer">
+            <span class="closeIcon" @click="closePrivatePopup">&#10006;</span>
+            <!-- Display server response -->
+            <div v-if="serverResponse" class="serverResponse">
+                {{ serverResponse }}
+            </div>
+            <input v-model="privateKey" placeholder="Enter Private Key" />
+            <button @click="checkPrivateKey">Check</button>
+        </div>
+
+        <div v-if="allowConnection" class="IdentityTransfer">
+            <button @click="AllowConnection()">Allow</button>
+            <button @click="HideAllowConnection()">Close</button>
+        </div>
+
+
+        <!-- Error message section -->
+        <div v-if="connectionError" class="errorContainer">
+            {{ connectionError }}
+        </div>
+    </div>
+</template>
+  
+<script setup lang="ts">
+import { ref } from 'vue';
+import axios from 'axios';
+
+// State variables
+const email = ref('');
+const connectionError = ref('');
+const showSuccessPopup = ref(false); // Added a variable to control the success popup visibility
+
+// Function to connect identity
+const connectIdentity = async () => {
+    console.log(`Sending email is: ${email}`);
+    try {
+        const response = await axios.post('http://localhost:3001/checkEmail', {
+            data: email,
+        });
+
+        console.log(response);
+
+        if (response.data.success) {
+            // Set the variable to show the success popup
+            showSuccessPopup.value = true;
+        } else {
+            // Set the error message
+            connectionError.value = response.data.message;
+        }
+    } catch (error) {
+        console.error('An error occurred:', error);
+        connectionError.value = 'An error occurred while connecting identity.';
+    }
+};
+
+const showAccountModal = ref(false);
+const accounts = ref([]); // Array to store MetaMask accounts
+const selectedAccount = ref('');
+// shwoing related to the private key 
+const showPrivateKeyInput = ref(false);
+const privateKey = ref('');
+const serverResponse = ref('');
+
+const allowConnection = ref(false);
+
+// Function to open the account modal
+const openAccountModal = () => {
+    // hide the older window before it 
+    showSuccessPopup.value = false;
+    // Check if MetaMask is installed and available
+    if (window.ethereum) {
+        // Request access to accounts
+        window.ethereum.request({ method: 'eth_requestAccounts' })
+            .then((accs: never[]) => {
+                accounts.value = accs;
+                showAccountModal.value = true;
+            })
+            .catch((error: { message: any; }) => {
+                console.error('Error connecting with MetaMask:', error.message);
+            });
+    } else {
+        console.error('MetaMask is not installed or not available.');
+    }
+};
+
+// Function to connect with the selected account
+const connectWithSelectedAccount = () => {
+    if (selectedAccount.value) {
+        console.log(`Account choosen is: ${selectedAccount.value}`)
+        // Save selected account to local storage
+        localStorage.setItem('selectedAccount', selectedAccount.value);
+
+        // You can perform additional actions with the selected account if needed
+        console.log(`Connected with MetaMask. Selected account: ${selectedAccount.value}`);
+        // Update ref variable to show the private key input div
+        showPrivateKeyInput.value = true;
+
+    }
+};
+
+// Function to close the account modal
+const closeAccountModal = () => {
+    showAccountModal.value = false;
+};
+
+// hiding the div by clicking on the close button
+// Function to close the success popup
+const closeSuccessPopup = () => {
+    showSuccessPopup.value = false;
+};
+
+
+const checkPrivateKey = async () => {
+    // Your server endpoint URL
+    const serverEndpoint = 'http://localhost:3001/checkKey';
+
+    try {
+        // Make Axios POST request with the private key and selected account
+        const response = await axios.post(serverEndpoint, {
+            privateKey: privateKey.value,
+            selectedAccount: localStorage.getItem('selectedAccount'),
+        });
+
+        if (response.status === 200) {
+            allowConnection.value = true;
+            console.log('keys matched');
+            // hidel the old dialogs 
+            showPrivateKeyInput.value = false;
+            // setting up the private key
+            localStorage.setItem('selectedPrivateKey', privateKey.value);
+        }
+        else {
+            console.log('Keys does not match');
+        }
+    } catch (error) {
+        console.error('Error checking private key:');
+        serverResponse.value = 'An error occurred while checking the private key.';
+    }
+};
+// hide the private key popup
+const closePrivatePopup = () => {
+    showPrivateKeyInput.value = false;
+}
+// do not allow connection adn hide the dialog
+const HideAllowConnection = () => {
+    allowConnection.value = false;
+}
+
+const AllowConnection = () => {
+    // send a simple post request to share the data
+    // we would be sending the email and appplication name directly 
+    // Make a request to your server to update the MongoDB collection
+    const serverEndpoint = 'http://localhost:3001/allowConnection';
+
+    const selectedEmail = email.value; // Assuming you have the email stored in the ref variable
+    console.log(`the email for allow connection is: ${selectedEmail}`);
+    axios.post(serverEndpoint, {
+        email: selectedEmail,
+        accessName: 'Identity', // Add the name you want to store in the accessList
+    })
+        .then((response) => {
+            console.log('Allow connection successful:', response.data);
+            // we would be receiving some data here in this from the connection side 
+            // that we would be passing to some other component's as props 
+            if (response.status === 200) {
+                // navigating from this side
+            }
+            else {
+                console.log(response.data.message);
+            }
+
+        })
+        .catch((error) => {
+            console.error('Error allowing connection:', error.message);
+            // Handle errors or show error messages to the user
+        })
+        .finally(() => {
+            // close the last div which is allow the connection for the user 
+            allowConnection.value = false;
+        });
+}
+</script>
+<style scoped>
+/* Styles for this component */
+.emailInput {
+    width: 400px;
+    height: 50px;
+    border: 1px solid rgba(0, 0, 0, 0.35);
+    border-radius: 5px;
+    margin-bottom: 50px;
+    padding-left: 10px;
+}
+
+.emailInput:focus {
+    outline: none;
+}
+
+.emailInput::placeholder {
+    font-weight: 600;
+    padding-left: 10px;
+}
+
+.successPopup {
+    /* Styles for success popup */
+    background-color: #ffffff;
+    color: white;
+    padding: 10px;
+    z-index: 999;
+    border: none;
+    border-radius: 5px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    gap: 25px;
+    top: -150px;
+    height: 200px;
+    box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.15);
+}
+
+.successConnectedMessage {
+    border: 1px solid rgba(0, 0, 0, 0.25);
+    border-radius: 4px;
+    text-align: center;
+    background-color: transparent;
+    color: rgb(0, 0, 0);
+    font-size: 16px;
+    font-weight: 600px;
+    box-shadow: 0px 0px 5px 0px rgb(121, 255, 121);
+    padding: 10px;
+    margin-top: 25px;
+}
+
+.errorContainer {
+    /* Styles for error message container */
+    color: #ff0000;
+    margin-top: 10px;
+}
+
+.accountModal {
+    position: fixed;
+    z-index: 999;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #fff;
+    color: black;
+    padding: 20px;
+    border: 1px solid #ccc;
+}
+
+.accountOption {
+    margin-bottom: 10px;
+}
+
+.closeIcon {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 20px;
+    color: black;
+    cursor: pointer;
+}
+
+.accounts-Options {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}
+</style>

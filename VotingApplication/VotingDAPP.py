@@ -1,6 +1,7 @@
 
 
 # register contract python file callups
+import requests
 from VotingCode.Registration.RegisterUser import Register
 from VotingCode.Registration.LoginPassword import LoginUserPassword
 from VotingCode.Registration.SetPassword import SetPassword
@@ -46,7 +47,31 @@ user_data = None
 
 @app.route('/')
 def index():
-    return render_template('Address.html')
+    return render_template('Identity.html')
+    #return render_template('Address.html')
+
+
+@app.route('/IdentityAuth', methods=['POST', 'GET'])
+def get_identity():
+    # getting user identity and passing that in the react application
+    if request.method == "POST":
+        gmail = request.form.get('identityEmail')
+        print(f'Identity email is for {gmail}')
+        express_endpoint = 'http://localhost:3001/identity-check'
+        data = {gmail: gmail}
+        response = requests.post(express_endpoint, data=data)
+        # now here we would be responding the endpoint and the data we receive from it after checking and
+        # how we would be moving forward with it 
+        if response.status_code == 200:
+            print(f'response status value is {response.status}')
+            status_variable = response.json().get('status')
+            if status_variable == False:
+                return render_template('IdentityStatus.html', status_variable=status_variable, gmail=gmail)
+            else:
+                return
+        else:
+            print('There is some error on the node server side please check')
+
 
 @app.route('/process_address', methods=['POST'])
 def process_address():

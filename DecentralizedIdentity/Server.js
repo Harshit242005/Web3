@@ -2,7 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const checkEmailExists = require('./InitialCheckup');
 const checkPrivateKeyExists = require('./FinalCheckup');
-
+const MongoClient = require('mongodb').MongoClient;
 const SendMail = require('./SendMail');
 const { generatePin, getVerificationPin, sendEmail } = SendMail; // Destructure the exported functions
 
@@ -45,9 +45,9 @@ async function checkAndLog(email) {
     }
 }
 
+
 // Endpoint to handle checking email
 app.post('/checkEmail', async (req, res) => {
-
     try {
         const { data } = req.body;
         console.log(`Email: ${data}`);
@@ -84,6 +84,8 @@ app.post('/checkEmail', async (req, res) => {
         res.status(500).json({ success: false, message: 'Internal server error' });
     }
 });
+
+
 
 app.post('/verifyEmailPin', (req, res) => {
     const { pin } = req.body;
@@ -145,11 +147,11 @@ app.post('/checkKey', async (req, res) => {
         if (email !== null) {
             // email is not null and private key exist in the contract
             console.log('private key verified correctly');
-            res.status(200).json({message: true});
+            res.status(200).json({ message: true });
         }
         else {
             console.log('private ket related email does not exist');
-            res.status(404).json({message: 'Private key does not exist go to signup'});
+            res.status(404).json({ message: 'Private key does not exist go to signup' });
         }
     } catch (error) {
         console.error('Error decrypting private key:', error);
@@ -194,7 +196,7 @@ app.get('/FetchDetails/:publicKey', async (req, res) => {
         'contact': values.contact
     }
     console.log(doc);
-    res.status(200).json({'document': doc});
+    res.status(200).json({ 'document': doc });
 });
 
 app.post('/updateValue', async (req, res) => {
@@ -203,7 +205,7 @@ app.post('/updateValue', async (req, res) => {
     const value = req.body.value;
     const publicKey = req.body.publicKey;
     // apply a switch call for the function call that would send up some conditional function call
-    switch(valueType) {
+    switch (valueType) {
         case 'email':
             // function call from update.js
             const emailRespond = updateValueInContract('email', value, publicKey);
@@ -211,7 +213,7 @@ app.post('/updateValue', async (req, res) => {
             break;
         case 'fullName':
             // function call from update.js
-            const nameResponsd =  updateValueInContract('fullName', value, publicKey);
+            const nameResponsd = updateValueInContract('fullName', value, publicKey);
             res(nameResponsd);
             break;
         case 'contact':
@@ -227,6 +229,47 @@ app.post('/updateValue', async (req, res) => {
     }
     // console.log(`value type is ${valueType} and value is ${value}`);
     // res.status(200).json({'message': 'Value is updated'})
+});
+
+// handling the connection and allowing the application and saving their details
+app.post('allowConnection', async (req, res) => {
+
+    // Connection URL and Database Name
+    const url = 'mongodb+srv://agreharshit610:i4ZnXRbFARI4kaSl@taskhandler.u5cgjfw.mongodb.net/';
+    const dbName = 'ApplicationAccess';
+    const collectionName = 'Access';
+    const client = await MongoClient.connect(url);
+    const db = client.db(dbName);
+    const collection = db.collection(collectionName);
+    // trying to connect with the mongodb client and make it working 
+    try {
+        const { email, accessName } = req.body;
+        console.log(`Email: ${email}, AccessName: ${accessName}`);
+
+        // Check if the email exists in any document
+        const existingDocument = await collection.findOne({ email });
+
+        if (existingDocument) {
+            // If the email exists, update the AccessList
+            await collection.updateOne(
+                { email },
+                { $addToSet: { AccessList: accessName } }
+            );
+        } else {
+            // If the email does not exist, create a new document
+            await collection.insertOne({
+                email,
+                AccessList: [accessName],
+                DeniedList: []
+            });
+        }
+
+        console.log('Allow connection successful');
+        res.status(200).json({ success: true, message: 'Allow connection successful' });
+    } catch (error) {
+        console.error('Error allowing connection:', error.message);
+        res.status(500).json({ success: false, message: 'Internal server error' });
+    }
 });
 
 // Start the server

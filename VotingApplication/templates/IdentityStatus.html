@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://code.jquery.com/jquery-3.7.1.slim.min.js"
+        integrity="sha256-kmHvs0B+OpCW5GVHUNjv9rOmY0IvSIRcf7zGUDTDQM8=" crossorigin="anonymous"></script>
+</head>
+
+<body>
+    <div id="popup" class="popup">
+        <div class="popup-content">
+            <p id="user-gmail">{{ gmail }}</p>
+            <p>This email is not verified. What would you like to do?</p>
+            <button id="verifyButton">Verify and Save</button>
+            <button id="tryAgainButton">Try Again with Another Email</button>
+        </div>
+    </div>
+    <script>
+        $(document).ready(function () {
+            const verifyButton = document.getElementById('verifyButton');
+            const tryAgainButton = document.getElementById('tryAgainButton');
+            const user_gmail = document.getElementById('user-gmail').innerText;
+            console.log(`user gmail is: ${user_gmail}`);
+            verifyButton.addEventListener('click', () => {
+                $.ajax({
+                    type: "POST",
+                    // sending it for the verification endpoint
+                    url: "http://localhost:3001/checkEmail", // Replace with the actual endpoint
+                    data: { email: user_gmail },
+                    success: function (response) {
+                        // on success we would be redirecting to another page for verifying the endpoint 
+                        if (response.response_boolean_value) {
+                            
+                        }
+                        else {
+                            // status failed 
+                        }
+                    },
+                    error: function (error) {
+                        // Handle the error response
+                        console.error("Error verifying email:", error);
+                    }
+                });
+            });
+
+            tryAgainButton.addEventListener('click', () => {
+                // Go back and try another email for this
+                window.location.href = "/"; // Replace with the actual endpoint
+            });
+        });
+    </script>
+</body>
+
+</html>

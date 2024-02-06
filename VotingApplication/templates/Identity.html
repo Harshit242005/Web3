@@ -1,0 +1,48 @@
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Continue with identity</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='Identity.css') }}">
+</head>
+
+<body>
+    
+    <!-- if that response is false then do not show this -->
+    <button class="identity-button" id="show-identity">
+        Continue with identity
+    </button>
+    <div class="identity-form" id="identity-form">
+        <form action="/IdentityAuth" method="post">
+            <input type="email" placeholder="Type email..." autocomplete="off" name="identityEmail" />
+            <button type="submit">Check</button>
+        </form>
+    </div>
+    <!-- checking the reponse and showing this part only -->
+    <!-- hidden options after the email auth failed -->
+   
+    
+
+    <script>
+        const open_button = document.getElementById('show-identity');
+        const form_div = document.getElementById('identity-form');
+
+       
+
+
+        open_button.addEventListener('click', () => {
+            if (form_div.style.display == "none") {
+                form_div.style.display = "flex";
+            }
+            else {
+                form_div.style.display = "none";
+            }
+        });
+
+
+        
+    </script>
+</body>
+
+</html>
