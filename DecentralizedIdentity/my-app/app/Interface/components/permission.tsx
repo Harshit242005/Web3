@@ -3,6 +3,9 @@ import React, {useState} from "react";
 import Access from './access';
 import Denied from './denied';
 import styles from '../page.module.css';
+import { useInputData } from "@/app/InputDataContext";
+import axios from "axios";
+
 interface PermissionPros {
     privateKey: string,
     publicKey: string
@@ -15,6 +18,13 @@ const Permission: React.FC<PermissionPros> = ({privateKey, publicKey}) => {
         setSelectedComponent(component);
         setSelectedButton(component);
     };
+    const { inputData, setInputData } = useInputData();
+    // use the axios post method to send up the data
+
+    const response = axios.post('http://localhost:3001/GetApplicationName', {
+        email: inputData
+    });
+    
     return (
         <div>
             <p>Permission component</p>

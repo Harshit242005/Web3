@@ -2,6 +2,7 @@
 
 
 'use client';
+import { useInputData } from './InputDataContext';
 import React, { useState, ChangeEvent } from 'react';
 import axios from 'axios';
 import styles from './page.module.css';
@@ -9,7 +10,10 @@ import { useRouter } from 'next/navigation';
 import { query } from 'express';
 
 const Home: React.FC = () => {
-  const [inputData, setInputData] = useState<string>('');
+  const { inputData, setInputData } = useInputData();
+
+  
+  // const [inputData, setInputData] = useState<string>('');
   const [showVerification, setShowVerification] = useState(false);
   const [verificationPin, setVerificationPin] = useState<string>('');
   const navigate = useRouter();

@@ -13,9 +13,21 @@
                 Success! Identity connected.
             </div>
             <div>
-                <button @click="openAccountModal">Choose account for connecting</button>
+                <button @click="openAccountModal">Connect with metamask</button>
+                <br />
+                <button @click="TypeAccount">Type your own account</button>
             </div>
         </div>
+        <!-- type address on manual -->
+        <div v-if="showTypeAccount" class="TypeAccount">
+            <!-- type your model and account -->
+            <input type="text" v-model="PublicAccount" placeholder="Type account...">
+            <button @click="SaveAccount">Save address</button>
+        </div>
+        <!-- type privatekey of the account you have typed -->
+
+
+
 
         <!-- Account modal -->
         <div v-if="showAccountModal" class="accountModal">
@@ -159,10 +171,10 @@ const checkPrivateKey = async () => {
         });
 
         if (response.status === 200) {
-            allowConnection.value = true;
-            console.log('keys matched');
             // hidel the old dialogs 
             showPrivateKeyInput.value = false;
+            allowConnection.value = true;
+            console.log('keys matched');
             // setting up the private key
             localStorage.setItem('selectedPrivateKey', privateKey.value);
         }
@@ -193,7 +205,7 @@ const AllowConnection = () => {
     console.log(`the email for allow connection is: ${selectedEmail}`);
     axios.post(serverEndpoint, {
         email: selectedEmail,
-        accessName: 'Identity', // Add the name you want to store in the accessList
+        accessName: 'Voting Application', // Add the name you want to store in the accessList
     })
         .then((response) => {
             console.log('Allow connection successful:', response.data);
@@ -215,6 +227,22 @@ const AllowConnection = () => {
             // close the last div which is allow the connection for the user 
             allowConnection.value = false;
         });
+}
+
+// inital value for the account typing
+const showTypeAccount = ref(false);
+const PublicAccount = ref('');
+const TypeAccount = () => {
+    // we would show up the account for the new user 
+    showTypeAccount.value = true;
+}
+
+const SaveAccount = () => {
+    // saving the account
+    localStorage.setItem('selectedAccount', PublicAccount.value);
+    showTypeAccount.value = false;
+    showPrivateKeyInput.value = true
+    
 }
 </script>
 <style scoped>
@@ -306,5 +334,25 @@ const AllowConnection = () => {
     justify-content: center;
     align-items: center;
     gap: 10px;
+}
+
+.TypeAccount
+{
+    z-index: 999;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid rgba(0, 0, 0, 0.25);
+    width: 400px;
+    height: 200px;
+    border-radius: 5px;
+}
+
+.TypeAccount input {
+    width: 400px;
+    height: 60px;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
 }
 </style>

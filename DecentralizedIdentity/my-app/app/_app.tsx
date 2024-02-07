@@ -2,11 +2,17 @@
 // pages/_app.tsx
 import { AppProps } from 'next/app';
 import { InputDataProvider } from './InputDataContext';
+import Home from './page';
+import Access from './Interface/components/access';
+import Denied from './Interface/components/denied';
+
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
     <InputDataProvider>
-      <Component {...pageProps} />
+     <Access privateKey={''} publicKey={''} />
+      <Home />
+      <Denied privateKey={''} publicKey={''} />
     </InputDataProvider>
   );
 }

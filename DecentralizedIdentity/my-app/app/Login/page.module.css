@@ -6,9 +6,27 @@
     align-items: center;
     gap: 25px;
     position: relative;
-    top: 25px;
+    top: 0px;
 }
 
+
+.checkButtons
+{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 25px;
+}
+
+.connectionOption
+{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 25px;
+}
 
 .sendKeys
 {
