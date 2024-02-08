@@ -4,6 +4,82 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    top: 100px;
+    position: relative;
+}
+
+.showSaveButton
+{
+    width: 200px;
+    height: 50px;
+    border: 1px solid rgba(0, 0, 0, 0.251);
+    border-radius: 5px;
+    background-color: transparent;
+}
+
+.showSaveButtonActive
+{
+    display: block;
+}
+
+.showSaveButtonHide
+{
+    display: none;
+}
+
+
+.account
+{
+    width: 400px;
+    height: 80px;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.selectedAccount
+{
+    background-color: black;
+    color: white;
+}
+
+.account:hover
+{
+    background-color: black;
+    color: white;
+    
+}
+
+
+
+.privateKeySet
+{
+    width: 400px;
+    height: 50px;
+    padding-left: 10px;
+    border-radius: 5px;
+    border: 1px solid rgba(0, 0, 0, 0.25);
+}
+
+.privateKeySetVisible
+{
+    display: block;
+}
+
+.privateKeySetHidden
+{
+    display: none;
+}
+
+.hideButton
+{
+    display: none;
+}
+
+.showButton
+{
+    display: block;
 }
 
 .generateKeys

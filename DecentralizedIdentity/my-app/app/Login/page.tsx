@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import CryptoJS from 'crypto-js';
 import styles from './page.module.css';
 import { Wallet } from 'ethers';
+import { log } from "console";
 const Login: React.FC = () => {
     const navigation = useRouter();
     const [invalidKey, setInvalidKey] = useState('');
@@ -49,6 +50,13 @@ const Login: React.FC = () => {
     // const privateSecretKey = 'private';
     const [PublicKeyType, SetPublicKeyType] = useState<string>('');
 
+    // handling the selected account
+    const handleAccountSelection = (account: string) => {
+        // Set the selected account to the state variable
+        setPublicKeyToCheck(account);
+        console.log(`Selected account is: ${account}`);
+    };
+
     const handleCheckKey = () => {
         try {
             const wallet = new Wallet(privateKey);
@@ -56,8 +64,16 @@ const Login: React.FC = () => {
             const derivedPublicKey = wallet.address;
             console.log(`derived public key from the private key: ${derivedPublicKey}`)
             console.log(`my public key ${publicKeyToCheck}`);
-            // Check if the derived public key matches the provided public key
-            setIsMatch(derivedPublicKey === publicKeyToCheck);
+            console.log(`${ typeof derivedPublicKey} ${typeof publicKeyToCheck}`);
+            if (derivedPublicKey.toLowerCase() === publicKeyToCheck.toLowerCase())
+            {
+                setIsMatch(true);
+                console.log('matched correctly')
+            }
+            else {
+                setIsMatch(false);
+                console.log('matched incorrectly')
+            }
         } catch (error) {
             console.error('Error checking keys:', error);
             setIsMatch(false); // Set to false in case of any error
@@ -126,7 +142,14 @@ const Login: React.FC = () => {
                         {/* Fetch and map Metamask accounts here */}
                         {/* For simplicity, I'll assume you have a state to store Metamask accounts */}
                         {metamaskAccounts.map((account, index) => (
-                            <div key={index}>{account}</div>
+                            // <div className={styles.account} key={index}>{account}</div>
+                            <div
+                                className={`${styles.account} ${publicKeyToCheck === account ? styles.selectedAccount : ''}`}
+                                key={index}
+                                onClick={() => handleAccountSelection(account)}
+                            >
+                                {account}
+                            </div>
                         ))}
                     </div>
                 ) : null}

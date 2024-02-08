@@ -94,6 +94,11 @@ const Identity: React.FC<IdentityProps> = ({ privateKey, publicKey }) => {
         axios.get(`http://localhost:3001/FetchDetails/${publicKey}`)
             .then(response => {
                 const details = response.data.document;
+                // If 400 response, set SetInitialSent to false
+                if (response.status === 400) {
+                    SetInitialSent(false);
+                    return;
+                }
                 // restricting the user to click on create user button
                 SetInitialSent(true);
                 console.log(`Document details that i am fetching is: ${details}`);
@@ -142,7 +147,7 @@ const Identity: React.FC<IdentityProps> = ({ privateKey, publicKey }) => {
 
         else {
             SetStructError(message);
-            ;
+
         }
     }
 

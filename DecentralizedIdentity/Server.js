@@ -24,6 +24,7 @@ const app = express();
 const fs = require('fs');
 const { enc, AES } = require('crypto-js');
 const Web3 = require('web3');
+const { log } = require('console');
 const web3 = new Web3();
 const port = process.env.PORT || 3001;
 app.use(cors());
@@ -59,6 +60,7 @@ app.post('/checkEmail', async (req, res) => {
         // send verificaiton key for the user
         if (!status) {
             const verificationPin = generatePin();
+            console.log(`verification pin is: ${verificationPin}`)
             process.env.VERIFICATION_PIN = verificationPin;
 
             // Read the existing content of .env
@@ -182,22 +184,55 @@ app.post('/createStructUser', async (req, res) => {
     }
 });
 
-// fecthing the details on the get request
+// // fecthing the details on the get request
+// app.get('/FetchDetails/:publicKey', async (req, res) => {
+//     const publicKey = req.params.publicKey;
+//     console.log(`public key is ${publicKey}`);
+//     // calling details for functions 
+//     const values = await GetDetails(publicKey);
+//     // creating a object and passing details on it and sending that object as response 
+//     const doc = {
+//         'username': values.username,
+//         'email': values.email,
+//         'dob': values.dob,
+//         'contact': values.contact
+//     }
+//     console.log(doc);
+//     res.status(200).json({ 'document': doc });
+// });
+
+// Fetching the details on the GET request
 app.get('/FetchDetails/:publicKey', async (req, res) => {
-    const publicKey = req.params.publicKey;
-    console.log(`public key is ${publicKey}`);
-    // calling details for functions 
-    const values = await GetDetails(publicKey);
-    // creating a object and passing details on it and sending that object as response 
-    const doc = {
-        'username': values.username,
-        'email': values.email,
-        'dob': values.dob,
-        'contact': values.contact
+    try {
+        const publicKey = req.params.publicKey;
+        console.log(`public key is ${publicKey}`);
+        
+        // Calling details for functions 
+        const values = await GetDetails(publicKey);
+        console.log(`values that we are fetching are: ${values}`)
+        if (!values.username) {
+            // If values are null, send a 400 response
+            console.log('values does not exist');
+            res.status(400).json({ error: 'Details not found' });
+            return;
+        }
+
+        // Creating an object and passing details on it and sending that object as a response 
+        const doc = {
+            'username': values.username,
+            'email': values.email,
+            'dob': values.dob,
+            'contact': values.contact
+        };
+
+        console.log(doc);
+        res.status(200).json({ 'document': doc });
+    } catch (error) {
+        console.error('Error fetching details:', error);
+        res.status(500).json({ error: 'Internal server error' });
     }
-    console.log(doc);
-    res.status(200).json({ 'document': doc });
 });
+
 
 app.post('/updateValue', async (req, res) => {
     // handling the data
