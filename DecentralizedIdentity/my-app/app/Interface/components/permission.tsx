@@ -19,17 +19,12 @@ const Permission: React.FC<PermissionPros> = ({privateKey, publicKey}) => {
         setSelectedButton(component);
     };
     const { inputData, setInputData } = useInputData();
-    // use the axios post method to send up the data
-
-    const response = axios.post('http://localhost:3001/GetApplicationName', {
-        email: inputData
-    });
-    
+    console.log(`input data value is: ${inputData}`);
     return (
         <div>
-            <p>Permission component</p>
-            <p>{privateKey}</p>
-            <p>{publicKey}</p>
+            <p style={{fontSize: '24px', fontWeight: "bold"}}>Permission component</p>
+            {/* <p>{privateKey}</p>
+            <p>{publicKey}</p> */}
             <div className={styles.navigationButtons}>
                 <button onClick={() => handleButtonClick('Access')}
                 className={selectedButton === 'Access' ? styles.selectedButton : ''}

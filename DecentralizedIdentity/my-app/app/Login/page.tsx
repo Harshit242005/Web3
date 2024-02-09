@@ -125,8 +125,8 @@ const Login: React.FC = () => {
                 {/* first user would get his options to select which he want 
                 manual typing or connect with metamask */}
                 <div className={styles.connectionOption}>
-                    <button onClick={() => PublicKeyFillType('Manual')}>Type manual</button>
-                    <button onClick={() => PublicKeyFillType('Metamask')}>Connect with metamask</button>
+                    <button className={styles.sendKeys} onClick={() => PublicKeyFillType('Manual')}>Type manual</button>
+                    <button className={styles.sendKeys} onClick={() => PublicKeyFillType('Metamask')}>Connect with metamask</button>
                 </div>
                 {PublicKeyType === 'Manual' ? (
                     <input

@@ -78,9 +78,22 @@ import axios from 'axios';
 const email = ref('');
 const connectionError = ref('');
 const showSuccessPopup = ref(false); // Added a variable to control the success popup visibility
+const showAccountModal = ref(false);
+const accounts = ref([]); // Array to store MetaMask accounts
+const selectedAccount = ref('');
+// shwoing related to the private key 
+const showPrivateKeyInput = ref(false);
+const privateKey = ref('');
+const serverResponse = ref('');
 
+const allowConnection = ref(false);
+// inital value for the account typing
+const showTypeAccount = ref(false);
+const PublicAccount = ref('');
 // Function to connect identity
 const connectIdentity = async () => {
+    // we would check the item from the localstorage directly and check if that exist in localstorage or not
+    // and navigate the user directly to the landing / voting page
     console.log(`Sending email is: ${email}`);
     try {
         const response = await axios.post('http://localhost:3001/checkEmail', {
@@ -102,15 +115,7 @@ const connectIdentity = async () => {
     }
 };
 
-const showAccountModal = ref(false);
-const accounts = ref([]); // Array to store MetaMask accounts
-const selectedAccount = ref('');
-// shwoing related to the private key 
-const showPrivateKeyInput = ref(false);
-const privateKey = ref('');
-const serverResponse = ref('');
 
-const allowConnection = ref(false);
 
 // Function to open the account modal
 const openAccountModal = () => {
@@ -141,9 +146,10 @@ const connectWithSelectedAccount = () => {
 
         // You can perform additional actions with the selected account if needed
         console.log(`Connected with MetaMask. Selected account: ${selectedAccount.value}`);
+        // hide the private key input value
+        showAccountModal.value = false;
         // Update ref variable to show the private key input div
         showPrivateKeyInput.value = true;
-
     }
 };
 
@@ -161,13 +167,15 @@ const closeSuccessPopup = () => {
 
 const checkPrivateKey = async () => {
     // Your server endpoint URL
-    const serverEndpoint = 'http://localhost:3001/checkKey';
-
+    const serverEndpoint = 'http://localhost:3001/check';
+    
+    console.log(`private key value is: ${privateKey.value} for the selected account: ${localStorage.getItem('selectedAccount')}`);
     try {
+       
         // Make Axios POST request with the private key and selected account
         const response = await axios.post(serverEndpoint, {
-            privateKey: privateKey.value,
-            selectedAccount: localStorage.getItem('selectedAccount'),
+            PrivateKey: privateKey.value,
+            // selectedAccount: localStorage.getItem('selectedAccount'),
         });
 
         if (response.status === 200) {
@@ -196,7 +204,7 @@ const HideAllowConnection = () => {
 }
 
 const AllowConnection = () => {
-    // send a simple post request to share the data
+   
     // we would be sending the email and appplication name directly 
     // Make a request to your server to update the MongoDB collection
     const serverEndpoint = 'http://localhost:3001/allowConnection';
@@ -213,6 +221,7 @@ const AllowConnection = () => {
             // that we would be passing to some other component's as props 
             if (response.status === 200) {
                 // navigating from this side
+                localStorage.setItem('AllowConnection', 'True');
             }
             else {
                 console.log(response.data.message);
@@ -229,9 +238,7 @@ const AllowConnection = () => {
         });
 }
 
-// inital value for the account typing
-const showTypeAccount = ref(false);
-const PublicAccount = ref('');
+
 const TypeAccount = () => {
     // we would show up the account for the new user 
     showTypeAccount.value = true;
@@ -242,9 +249,11 @@ const SaveAccount = () => {
     localStorage.setItem('selectedAccount', PublicAccount.value);
     showTypeAccount.value = false;
     showPrivateKeyInput.value = true
-    
 }
+
 </script>
+
+
 <style scoped>
 /* Styles for this component */
 .emailInput {

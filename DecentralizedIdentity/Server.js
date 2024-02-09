@@ -162,6 +162,33 @@ app.post('/checkKey', async (req, res) => {
     }
 });
 
+// checking key for another kind of application
+app.post('/check', async (req, res) => {
+    const { PrivateKey } = req.body;
+
+    try {
+       
+
+        // Now you can use the decryptedPrivateKey as needed
+        console.log('Private Key:', PrivateKey);
+        const email = await checkPrivateKeyExists(PrivateKey);
+        console.log(`email related to private key is ${email}`);
+        if (email !== null) {
+            // email is not null and private key exist in the contract
+            console.log('private key verified correctly');
+            res.status(200).json({ message: true });
+        }
+        else {
+            console.log('private ket related email does not exist');
+            res.status(404).json({ message: 'Private key does not exist go to signup' });
+        }
+    } catch (error) {
+        console.error('Error decrypting private key:', error);
+        // Respond with an error message
+        res.status(500).json({ message: 'Error decrypting private key' });
+    }
+});
+
 // creating the user struct creating the endpoint
 app.post('/createStructUser', async (req, res) => {
     // getting the req data
@@ -267,7 +294,7 @@ app.post('/updateValue', async (req, res) => {
 });
 
 // handling the connection and allowing the application and saving their details
-app.post('allowConnection', async (req, res) => {
+app.post('/allowConnection', async (req, res) => {
 
     // Connection URL and Database Name
     const url = 'mongodb+srv://agreharshit610:i4ZnXRbFARI4kaSl@taskhandler.u5cgjfw.mongodb.net/';
@@ -304,6 +331,43 @@ app.post('allowConnection', async (req, res) => {
     } catch (error) {
         console.error('Error allowing connection:', error.message);
         res.status(500).json({ success: false, message: 'Internal server error' });
+    }
+});
+
+
+app.post('/GetAllowAccess', async (req, res) => {
+    // Connection URL and Database Name
+    const url = 'mongodb+srv://agreharshit610:i4ZnXRbFARI4kaSl@taskhandler.u5cgjfw.mongodb.net/';
+    const dbName = 'ApplicationAccess';
+    const collectionName = 'Access';
+
+    const client = await MongoClient.connect(url);
+    const db = client.db(dbName);
+    const collection = db.collection(collectionName);
+
+    try {
+        const { email } = req.body;
+        console.log(`Fetching AccessList for email: ${email}`);
+
+        // Check if the email exists in any document
+        const existingDocument = await collection.findOne({ email });
+
+        if (existingDocument) {
+            // If the email exists, retrieve the AccessList
+            const accessList = existingDocument.AccessList;
+            console.log('AccessList retrieved successfully:', accessList);
+            res.status(200).json({ success: true, allowNames: accessList });
+        } else {
+            // If the email does not exist, return an empty AccessList
+            console.log('Email not found. No AccessList available.');
+            res.status(200).json({ success: true, accessList: [] });
+        }
+    } catch (error) {
+        console.error('Error fetching AccessList:', error.message);
+        res.status(500).json({ success: false, message: 'Internal server error' });
+    } finally {
+        // Close the MongoDB client
+        client.close();
     }
 });
 
