@@ -95,6 +95,7 @@ const connectIdentity = async () => {
     // we would check the item from the localstorage directly and check if that exist in localstorage or not
     // and navigate the user directly to the landing / voting page
     console.log(`Sending email is: ${email}`);
+    // try to get the public accont as well on condition 
     try {
         const response = await axios.post('http://localhost:3001/checkEmail', {
             data: email,
@@ -105,6 +106,27 @@ const connectIdentity = async () => {
         if (response.data.success) {
             // Set the variable to show the success popup
             showSuccessPopup.value = true;
+            console.log('email exist in the connection');
+            
+            // we have to check for the allow access if the voting application [ name of app ] exist in the 
+            // database for allow connection or not 
+            const isExist = await checkAccess();
+            
+            if (isExist) {
+                console.log('voting application exist in the access list');
+                if (localStorage.getItem('selectedAccount') != null) {
+                    // we would be sending an another axios post method request to get the data needed 
+                    // and we would navigate from here directly if the data e xist to the main interfae page 
+                    const publicKey = localStorage.getItem('selectedAccount');
+                    console.log(`public key is: ${publicKey}`);
+                    
+                    const response = axios.post(`http://localhost:3001/FetchDetails/${publicKey}`);
+
+                    // listen for the response if the data exist then just directoly move out of this component
+                    console.log(response);
+                    // here we would navigate to the other page directly with the data
+                }
+            }
         } else {
             // Set the error message
             connectionError.value = response.data.message;
@@ -115,7 +137,24 @@ const connectIdentity = async () => {
     }
 };
 
-
+// we have to make an function for this to check if the application name exist in the access list
+const checkAccess = async () => {
+    console.log(`checking for the email is: ${email.value}`);
+    const response = await axios.post('http://localhost:3001/GetAllowAccess', {
+        email: email.value
+    });
+    console.log(response);
+    if (response.status === 200) {
+        const accessList = response.data.allowNames;
+        console.log(`Getting the access names list is: ${accessList}`);
+        if ("Voting Application" in accessList) {
+            return true;
+        }
+        else {
+            return false
+        }
+    }
+}
 
 // Function to open the account modal
 const openAccountModal = () => {
@@ -168,10 +207,10 @@ const closeSuccessPopup = () => {
 const checkPrivateKey = async () => {
     // Your server endpoint URL
     const serverEndpoint = 'http://localhost:3001/check';
-    
+
     console.log(`private key value is: ${privateKey.value} for the selected account: ${localStorage.getItem('selectedAccount')}`);
     try {
-       
+
         // Make Axios POST request with the private key and selected account
         const response = await axios.post(serverEndpoint, {
             PrivateKey: privateKey.value,
@@ -204,7 +243,7 @@ const HideAllowConnection = () => {
 }
 
 const AllowConnection = () => {
-   
+
     // we would be sending the email and appplication name directly 
     // Make a request to your server to update the MongoDB collection
     const serverEndpoint = 'http://localhost:3001/allowConnection';
@@ -345,8 +384,7 @@ const SaveAccount = () => {
     gap: 10px;
 }
 
-.TypeAccount
-{
+.TypeAccount {
     z-index: 999;
     display: flex;
     flex-direction: column;

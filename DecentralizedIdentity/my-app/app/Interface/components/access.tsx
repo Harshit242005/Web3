@@ -33,9 +33,21 @@ const Access: React.FC<IdentityProps> = ({ publicKey, privateKey }) => {
     }, [inputData]);
 
     // function to handle the button which want to make the connection disappear
-    const handleButtonClick = (name: string) => {
-        // Handle the button click based on the name (you can use it as needed)
+    const handleButtonClick = async (name: string) => {
+        
         console.log(`Button clicked for name: ${name}`);
+        // here we would be sending of the name and email to the backend to change the name of the application
+        // and put it in the deny list
+        const response = await axios.post('http://localhost:3001/AddInDeny', {
+            email: inputData,
+            application_name: name
+        });
+
+        console.log(response)
+        if (response.status === 200) {
+            console.log('Application name added to the deny list');
+            
+        }
     };
 
     return (
