@@ -34,7 +34,7 @@ const Access: React.FC<IdentityProps> = ({ publicKey, privateKey }) => {
 
     // function to handle the button which want to make the connection disappear
     const handleButtonClick = async (name: string) => {
-        
+
         console.log(`Button clicked for name: ${name}`);
         // here we would be sending of the name and email to the backend to change the name of the application
         // and put it in the deny list
@@ -46,7 +46,7 @@ const Access: React.FC<IdentityProps> = ({ publicKey, privateKey }) => {
         console.log(response)
         if (response.status === 200) {
             console.log('Application name added to the deny list');
-            
+
         }
     };
 
@@ -55,14 +55,27 @@ const Access: React.FC<IdentityProps> = ({ publicKey, privateKey }) => {
             <p className={styles.heading}>Access application list</p>
             {/* let's provide the optios user can use for this  */}
             {/* we would map up the values of the useState here */}
-            {allowName.map((name, index) => (
+            {/* {allowName.map((name, index) => (
                 <div className={styles.allowConnections} key={index}>
                     <p>{name}</p>
                 <button className={styles.accessButton} onClick={() => handleButtonClick(name)}>
                     Deny
                 </button>
                 </div>
-            ))}
+            ))} */}
+            {allowName && allowName.length > 0 ? (
+                allowName.map((name, index) => (
+                    <div className={styles.allowConnections} key={index}>
+                        <p>{name}</p>
+                        <button className={styles.accessButton} onClick={() => handleButtonClick(name)}>
+                            Deny
+                        </button>
+                    </div>
+                ))
+            ) : (
+                <p>No applications are allowed right now.</p>
+            )}
+
         </div>
     )
 }

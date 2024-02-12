@@ -228,6 +228,8 @@ app.post('/createStructUser', async (req, res) => {
 //     res.status(200).json({ 'document': doc });
 // });
 
+
+
 // Fetching the details on the GET request
 app.get('/FetchDetails/:publicKey', async (req, res) => {
     try {

@@ -73,7 +73,7 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import axios from 'axios';
-
+import router from './router';
 // State variables
 const email = ref('');
 const connectionError = ref('');
@@ -90,6 +90,10 @@ const allowConnection = ref(false);
 // inital value for the account typing
 const showTypeAccount = ref(false);
 const PublicAccount = ref('');
+
+// Import using the declared module
+
+
 // Function to connect identity
 const connectIdentity = async () => {
     // we would check the item from the localstorage directly and check if that exist in localstorage or not
@@ -98,7 +102,7 @@ const connectIdentity = async () => {
     // try to get the public accont as well on condition 
     try {
         const response = await axios.post('http://localhost:3001/checkEmail', {
-            data: email,
+            data: email.value,
         });
 
         console.log(response);
@@ -107,11 +111,11 @@ const connectIdentity = async () => {
             // Set the variable to show the success popup
             showSuccessPopup.value = true;
             console.log('email exist in the connection');
-            
+
             // we have to check for the allow access if the voting application [ name of app ] exist in the 
             // database for allow connection or not 
             const isExist = await checkAccess();
-            
+
             if (isExist) {
                 console.log('voting application exist in the access list');
                 if (localStorage.getItem('selectedAccount') != null) {
@@ -119,12 +123,12 @@ const connectIdentity = async () => {
                     // and we would navigate from here directly if the data e xist to the main interfae page 
                     const publicKey = localStorage.getItem('selectedAccount');
                     console.log(`public key is: ${publicKey}`);
-                    
-                    const response = axios.post(`http://localhost:3001/FetchDetails/${publicKey}`);
 
-                    // listen for the response if the data exist then just directoly move out of this component
-                    console.log(response);
-                    // here we would navigate to the other page directly with the data
+                    const response = await axios.get(`http://localhost:3001/FetchDetails/${publicKey}`);
+
+                    if (response.data.document) {
+                        router.push({name: 'Interface', params: {document: response.data.document}}); 
+                    }
                 }
             }
         } else {
@@ -147,11 +151,14 @@ const checkAccess = async () => {
     if (response.status === 200) {
         const accessList = response.data.allowNames;
         console.log(`Getting the access names list is: ${accessList}`);
-        if ("Voting Application" in accessList) {
+        // if ("Voting Application" in accessList) {
+        //     return true;
+        // }
+        if (accessList.includes("Voting Application")) {
             return true;
         }
         else {
-            return false
+            return false;
         }
     }
 }

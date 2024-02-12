@@ -57,14 +57,18 @@ const Denied: React.FC<IdentityProps> = ({ publicKey, privateKey }) => {
                 <p className={styles.heading}>Denied application list</p>
                 {/* let's provide the optios user can use for this  */}
                 {/* we would map up the values of the useState here */}
-                {denyName.map((name, index) => (
+                {denyName && denyName.length > 0 ? ( denyName.map((name, index) => (
                     <div className={styles.allowConnections} key={index}>
                         <p>{name}</p>
                         <button className={styles.accessButton} onClick={() => handleButtonClick(name)}>
                             Allow
                         </button>
                     </div>
-                ))}
+                )) 
+                ) : (
+                    <p>No application in the denied list right now</p>
+                )}
+                
             </div>
         </div>
     )
