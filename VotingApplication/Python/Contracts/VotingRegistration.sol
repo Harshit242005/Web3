@@ -5,9 +5,7 @@ contract Voting {
         string name;
         string email;
         string phoneNumber;
-        uint256 age;
-        string gender;
-        string location;
+        string dob;
     }
 
     mapping(address => User) public users; // Mapping to store user data based on Ethereum addresses
@@ -33,26 +31,20 @@ contract Voting {
         string name,
         string email,
         string phoneNumber,
-        uint256 age,
-        string gender,
-        string location
+       string dob
     );
 
     function registerUser(
         string memory _name,
         string memory _email,
         string memory _phoneNumber,
-        uint256 _age,
-        string memory _gender,
-        string memory _location
+       string memory _dob
     ) public {
         User memory newUser = User({
             name: _name,
             email: _email,
             phoneNumber: _phoneNumber,
-            age: _age,
-            gender: _gender,
-            location: _location
+            dob: _dob
         });
 
         // Map the user data to the sender's address
@@ -66,24 +58,25 @@ contract Voting {
     }
 
     function setUserPassword(string memory _password) public {
-        // Retrieve the username from the first mapping based on msg.sender
-        string memory username = users[msg.sender].name;
+    // Retrieve the username from the first mapping based on msg.sender
+    string memory username = users[msg.sender].name;
 
-        // Hash the provided password using keccak256
-        bytes32 hashedPassword = keccak256(abi.encodePacked(_password));
+    // Hash the provided password using keccak256
+    bytes32 hashedPassword = keccak256(abi.encodePacked(_password));
 
-        // Map the username to the password
-        userPasswords[username] = hashedPassword;
+    // Map the username to the password in userPasswords mapping
+    userPasswords[username] = hashedPassword;
 
-        // Emit an event for setting the user password
-        emit UserPasswordSet(username);
+    // Emit an event for setting the user password
+    emit UserPasswordSet(username);
 
-        // Notify user registration status
-        emit RegistrationStatusFinalStatus(
-            msg.sender,
-            bytes(users[msg.sender].name).length != 0
-        );
-    }
+    // Notify user registration status using userPasswords mapping
+    emit RegistrationStatusFinalStatus(
+        msg.sender,
+        userPasswords[username].length != 0
+    );
+}
+
 
     function getUserPassword(string memory _username) public view returns (bytes32) {
         return userPasswords[_username];
@@ -103,9 +96,7 @@ contract Voting {
                 users[msg.sender].name,
                 users[msg.sender].email,
                 users[msg.sender].phoneNumber,
-                users[msg.sender].age,
-                users[msg.sender].gender,
-                users[msg.sender].location
+               users[msg.sender].dob
             );
             return "Login successful";
         } else {

@@ -125,9 +125,17 @@ const connectIdentity = async () => {
                     console.log(`public key is: ${publicKey}`);
 
                     const response = await axios.get(`http://localhost:3001/FetchDetails/${publicKey}`);
-
-                    if (response.data.document) {
-                        router.push({name: 'Interface', params: {document: response.data.document}}); 
+                    console.log(`username data is: ${response.data.document.username}`);
+                    if (response.status == 200) {
+                        router.push({
+                            name: 'Interface',
+                            params: {
+                                username: response.data.document.username,
+                                email: response.data.document.email,
+                                dob: response.data.document.dob,
+                                contact: response.data.document.contact
+                            }
+                        });
                     }
                 }
             }

@@ -1,13 +1,18 @@
 // defining the router for the application
 // src/router/index.js
-import { createRouter, createWebHistory, RouteRecordRaw  } from 'vue-router';
+import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router';
 
 import Interface from './components/Interface.vue'
-
+import Landing from './Landing.vue'
 const routes: Array<RouteRecordRaw> = [
-  
   {
-    path: '/Interface',
+    path: '/',
+    name: 'Landing',
+    component: Landing,
+    props: true
+  },
+  {
+    path: '/Interface/:username/:email/:dob/:contact',
     name: 'Interface',
     component: Interface,
     props: true

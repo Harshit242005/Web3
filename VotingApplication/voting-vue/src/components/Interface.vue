@@ -1,13 +1,17 @@
 <template>
-
+  <div>
+    <h1>{{ username }}</h1>
+    
+  </div>
 </template>
 
 <script setup lang="ts">
-import {onMounted} from 'vue';
-const props = defineProps(['document']);
+import { ref } from 'vue';
+const username = ref('');
+const props = defineProps(['username', 'email', 'dob', 'contact']);
+username.value = props.username;
+console.log(username);
 
-// Use publicKey in your component logic
-onMounted(() => {
-  console.log('Received document:', props.document);
-});
+
+
 </script>

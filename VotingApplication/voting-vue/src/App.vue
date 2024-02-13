@@ -1,13 +1,9 @@
 <script setup lang="ts">
-// import HelloWorld from './components/HelloWorld.vue';
-import Landing from './Landing.vue';
 
 </script>
 
 <template>
-  
-  <!-- <HelloWorld /><br /> -->
-  <Landing />
+  <router-view></router-view>
 </template>
 
 <style scoped>
