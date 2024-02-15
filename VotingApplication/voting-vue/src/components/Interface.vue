@@ -20,14 +20,21 @@ const username = ref('');
 const password_input = ref('');
 const selected_auth = ref('');
 import axios from 'axios';
+import router from '../router';
 const props = defineProps(['username', 'email', 'dob', 'contact']);
+
+const privateKey = localStorage.getItem('selectedPrivateKey');
+const publicKey = localStorage.getItem('selectedAccount');
 const doc = {
-    'username': props.username,
-    'email': props.email,
-    'dob': props.dob,
-    'contact': props.contact,
-    'password': '' // Add the 'password' key here
-  } 
+  'username': props.username,
+  'email': props.email,
+  'dob': props.dob,
+  'contact': props.contact,
+  'password': '', // Add the 'password' key here
+  'privatekey': privateKey,
+  'publickey': publicKey
+
+}
 username.value = props.username;
 console.log(username.value);
 
@@ -37,7 +44,7 @@ const open_dialog = (name: string) => {
   selected_auth.value = name;
   show_dialog.value = true;
 
-  
+
 }
 
 const close_dialog = () => {
@@ -56,7 +63,19 @@ const auth_user = async () => {
 
     // Handle the response
     console.log('Response:', response.data);
-    // You can perform further actions based on the response
+    if (response.status === 200) {
+      // push to some other page 
+      router.push({
+        name: '/VotingInterfce', params: {
+          'username': props.username,
+          'email': props.email,
+          'dob': props.dob,
+          'contact': props.contact,
+          'password': password_input.value
+        }
+      })
+    }
+
   } catch (error) {
     console.error('Error:', error);
     // Handle the error if the request fails
@@ -82,8 +101,7 @@ const auth_user = async () => {
   color: white;
 }
 
-.ask_for_password
-{
+.ask_for_password {
   z-index: 999;
   display: flex;
   flex-direction: column;
@@ -101,8 +119,7 @@ const auth_user = async () => {
   padding: 25px;
 }
 
-.password_input
-{
+.password_input {
   width: 350px;
   height: 75px;
   border-radius: 5px;
@@ -111,13 +128,11 @@ const auth_user = async () => {
 
 }
 
-.password_input:focus
-{
+.password_input:focus {
   outline: none;
 }
 
-.password_button
-{
+.password_button {
   width: 250px;
   height: 50px;
   border-radius: 5px;
