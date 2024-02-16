@@ -1,14 +1,15 @@
 # class based signup class for the contracts
-from Contracts import Registration
+import Registration
 from web3 import Web3
 
-class Signup:
+class SignupUser:
     def __init__(self, username, gmail, dob, contact, password, privatekey, publickey):
         self.request_api = "https://goerli.infura.io/v3/b4e87e31b3df4aba9f33d76ec45a139d"
         self.web3 = Web3(Web3.HTTPProvider(self.request_api))
         self.privateKey = privatekey
-        self.publicKey = publickey
-        
+        # self.publicKey = publickey
+        self.publicKey = self.web3.to_checksum_address(publickey)
+
         self.bytecode = Registration.contract_bytecode
         self.contract_address = Registration.register_contract_address
         self.checksum_address = self.web3.to_checksum_address(self.contract_address)
@@ -32,17 +33,19 @@ class Signup:
             print("Something wrong happend with initial checkup")
 
     def signup_initial(self, username, gmail, dob, contact):
+        print(f'data for the initial level signup: {username}, {dob}, {contact}, {gmail}')
         # get the receipt of the register
         try: 
-            gas_estimate_register = self.contract.functions.registerUser(username, gmail, contact, dob)
+            gas_estimate_register = self.contract.functions.registerUser(username, gmail, contact, dob).estimate_gas()
+            print(f'estimate register price for initial register: {gas_estimate_register}')
             nonce_register = self.web3.eth.get_transaction_count(self.publicKey)
-            gas_price_register = self.web3.gas_price
-
+            
+            print(f'user data for initial register: {username}, {dob}, {contact}, {gmail}')
             # transaction for the register of the user
             transaction_register = self.contract.functions.registerUser(username, gmail, contact, dob).build_transaction({
                 'from': self.publicKey,
-                'gas': int(gas_estimate_register),
-                'gasPrice': self.web3.to_wei('20', 'gwei'),
+                'gas': int(gas_estimate_register * 2),
+                'gasPrice': self.web3.to_wei('40', 'gwei'),
                 'nonce': nonce_register
             })
 
@@ -60,15 +63,19 @@ class Signup:
                 }).hex()
                 print(f'Revert message: {revert_message}')
 
+            # with the use of receipt get the events working 
+            for event in self.contract.events.RegistrationStatusInitialStatus().process_receipt(receipt_register):
+                return event['args']['isRegistered']
+            
+
         except ValueError as ve:
             print(f'value error is: {ve}')
         except TimeoutError as te:
             print(f'time out error: {te}')
         except Exception as e:
             print(f'an unexpected error occured: {e}')
-        # with the use of receipt get the events working 
-        for event in self.contract.events.RegistrationStatusInitialStatus().process_receipt(receipt_register):
-            return event['args'['isRegistered']]
+       
+
     
     def signup_final(self, password):
         # setting up th password this time in this call 
@@ -77,12 +84,12 @@ class Signup:
 
         # Build the set password transaction
         nonce_set_password = self.web3.eth.get_transaction_count(self.publicKey)
-        gas_price_set_password = self.web3.eth.gas_price
+        
 
         transaction_set_password = self.contract.functions.setUserPassword(password).build_transaction({
             'from': self.publicKey,
-            'gas': int(gas_estimate_set_password),
-            'gasPrice': gas_price_set_password,
+            'gas': int(gas_estimate_set_password * 2),
+            'gasPrice': self.web3.to_wei('40', 'gwei'),
             'nonce': nonce_set_password,
         })
 
@@ -97,7 +104,7 @@ class Signup:
     
 
 
-class Login:
+class LoginUser:
     def __init__(self, publickey, password):
         self.request_api = "https://goerli.infura.io/v3/b4e87e31b3df4aba9f33d76ec45a139d"
         self.web3 = Web3(Web3.HTTPProvider(self.request_api))

@@ -66,7 +66,7 @@ const auth_user = async () => {
     if (response.status === 200) {
       // push to some other page 
       router.push({
-        name: '/VotingInterfce', params: {
+        name: '/VotingInterface', params: {
           'username': props.username,
           'email': props.email,
           'dob': props.dob,

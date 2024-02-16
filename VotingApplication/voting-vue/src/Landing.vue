@@ -139,6 +139,8 @@ const connectIdentity = async () => {
                     }
                 }
             }
+
+            
         } else {
             // Set the error message
             connectionError.value = response.data.message;

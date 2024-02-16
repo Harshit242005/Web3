@@ -1,5 +1,6 @@
 <template>
 <p>Voting Interface</p>
+
 </template>
 
 <script setup>

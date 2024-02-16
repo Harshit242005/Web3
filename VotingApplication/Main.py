@@ -2,7 +2,10 @@
 
 from flask import Flask, request, jsonify
 from flask_cors import CORS  # Import the CORS extension
-from Functions import Signup, Login
+
+from Auth import LoginUser, SignupUser
+
+
 app = Flask(__name__)
 CORS(app)
 # Define an endpoint to receive data from Vue.js
@@ -13,7 +16,7 @@ def Login():
         data = request.get_json()
         print('Received data: ', data)
 
-        login_instance = Login(
+        login_instance = LoginUser(
             publicKey = data.get('publicKey'),
             password = data.get('password')
         )
@@ -36,15 +39,16 @@ def Signup():
         print('Received Data:', data)
         # destruct the data and pass in the signup class 
         # Destructure the data and pass it to the Signup class
-        signup_instance = Signup(
-            username=data.get('username'),
-            gmail=data.get('email'),  # Assuming 'email' is the correct key in JSON
-            dob=data.get('dob'),
-            contact=data.get('contact'),
-            password=data.get('password'),
-            privatekey=data.get('privatekey'),
-            publickey=data.get('publickey')
+        signup_instance = SignupUser(
+        username=data.get('doc').get('username'),
+        gmail=data.get('doc').get('email'),
+        dob=data.get('doc').get('dob'),
+        contact=data.get('doc').get('contact'),
+        password=data.get('doc').get('password'),
+        privatekey=data.get('doc').get('privatekey'),
+        publickey=data.get('doc').get('publickey')
         )
+
         # if the return type is true
         # return status code 200 and success message true
         if signup_instance:
