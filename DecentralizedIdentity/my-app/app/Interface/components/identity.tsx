@@ -43,7 +43,8 @@ const Identity: React.FC<IdentityProps> = ({ privateKey, publicKey }) => {
             // object pass for which value and what value to get changed
             'valueType': newValue,
             'value': newInputBox,
-            'publicKey': publicKey
+            'publicKey': publicKey,
+            'privateKey': privateKey
         });
         // consoling out the values 
         console.log((await response).data.message);
@@ -51,6 +52,7 @@ const Identity: React.FC<IdentityProps> = ({ privateKey, publicKey }) => {
         if ((await response).status === 200) {
             // show up the values as a popup to see how this works out
             SetSuccessPopUp(true);
+            
         }
         else {
             // show a popup that value does not change
@@ -61,7 +63,8 @@ const Identity: React.FC<IdentityProps> = ({ privateKey, publicKey }) => {
     };
 
 
-    // Function to update the respective input box value
+
+    // Function to update the respective input box value and change it in the contract as well
     const handleEditClick = (fieldName: string) => {
         SetNewValueName(fieldName);
         setPopupVisibility(true);

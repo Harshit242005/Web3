@@ -268,27 +268,28 @@ app.post('/updateValue', async (req, res) => {
     const valueType = req.body.valueType;
     const value = req.body.value;
     const publicKey = req.body.publicKey;
+    const privateKey = req.body.privateKey;
     // apply a switch call for the function call that would send up some conditional function call
     switch (valueType) {
         case 'email':
             // function call from update.js
-            const emailRespond = updateValueInContract('email', value, publicKey);
-            res(emailRespond);
+            const emailRespond = updateValueInContract('email', value, publicKey, privateKey);
+            res.json(emailRespond);
             break;
         case 'fullName':
             // function call from update.js
-            const nameResponsd = updateValueInContract('fullName', value, publicKey);
-            res(nameResponsd);
+            const nameResponsd = updateValueInContract('fullName', value, publicKey, privateKey);
+            res.json(nameResponsd);
             break;
         case 'contact':
             // function call from update.js
-            const contactRespond = updateValueInContract('contact', value, publicKey);
-            res(contactRespond)
+            const contactRespond = updateValueInContract('contact', value, publicKey, privateKey);
+            res.json(contactRespond)
             break;
         case 'dob':
             // function call from update.js
-            const dobRespond = updateValue('dob', value, publicKey);
-            res(dobRespond);
+            const dobRespond = updateValue('dob', value, publicKey, privateKey);
+            res.json(dobRespond);
             break;
     }
     // console.log(`value type is ${valueType} and value is ${value}`);

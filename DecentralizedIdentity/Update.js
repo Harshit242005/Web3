@@ -372,14 +372,18 @@ const contract_abi = [
 
 // address for the contract
 const contractAddress = "0x415065cC7b943E27982772AcefA172d5E292e149";
-const privateKeySign = '7fd14eed812ee800b2e7d536090d5d514a2341bea36b04efba90a8d9abaf94b1';
-const account_address = '0x5780326e9F221afd01253C954b453ccCf4f2F30E'
+
+
+// const privateKeySign = '7fd14eed812ee800b2e7d536090d5d514a2341bea36b04efba90a8d9abaf94b1';
+// const account_address = '0x5780326e9F221afd01253C954b453ccCf4f2F30E'
+
+
 // contract remote nodes 
 const web3 = new Web3('https://goerli.infura.io/v3/b4e87e31b3df4aba9f33d76ec45a139d'); 
 // contract instance creation
 const interface_2_contract = new web3.eth.Contract(contract_abi, contractAddress);
 
-const updateValueInContract = async (valueType, value, publicAddress) => {
+const updateValueInContract = async (valueType, value, publicAddress, privateKey) => {
     console.log(`value type is: ${ valueType }, value is: ${ value }, and public address is: ${publicAddress}`);
 
     switch (valueType) {
@@ -387,7 +391,7 @@ const updateValueInContract = async (valueType, value, publicAddress) => {
             // run to create a transcation to set up new value 
             const encodedFunctionCallEmail = interface_2_contract.methods.updateEmail(publicAddress, value).encodeABI();
             const transcationObjectEmail = {
-                from: account_address,
+                from: publicAddress,
                 to: contractAddress,
                 data: encodedFunctionCallEmail
             }
@@ -398,7 +402,7 @@ const updateValueInContract = async (valueType, value, publicAddress) => {
                 })
                 .then(gasPrice => {
                     transcationObjectEmail.gasPrice = gasPrice;
-                    return web3.eth.accounts.signTransaction(transcationObjectEmail, privateKeySign);
+                    return web3.eth.accounts.signTransaction(transcationObjectEmail, privateKey);
                 })
                 .then(signedTx => {
                     console.log(`signed transaction: ${signedTx}`);
@@ -417,7 +421,7 @@ const updateValueInContract = async (valueType, value, publicAddress) => {
             // run to create a transcation to set up new value 
             const encodedFunctionCallFullName = interface_2_contract.methods.updateUsername(publicAddress, value).encodeABI();
             const transcationObjectFullName = {
-                from: account_address,
+                from: publicAddress,
                 to: contractAddress,
                 data: encodedFunctionCallFullName
             }
@@ -428,7 +432,7 @@ const updateValueInContract = async (valueType, value, publicAddress) => {
                 })
                 .then(gasPrice => {
                     transcationObjectFullName.gasPrice = gasPrice;
-                    return web3.eth.accounts.signTransaction(transcationObjectFullName, privateKeySign);
+                    return web3.eth.accounts.signTransaction(transcationObjectFullName, privateKey);
                 })
                 .then(signedTx => {
                     console.log(`signed transaction: ${signedTx}`);
@@ -448,7 +452,7 @@ const updateValueInContract = async (valueType, value, publicAddress) => {
             // run to create a transcation to set up new value 
             const encodedFunctionCallContact = interface_2_contract.methods.updateContact(publicAddress, value).encodeABI();
             const transcationObjectContact = {
-                from: account_address,
+                from: publicAddress,
                 to: contractAddress,
                 data: encodedFunctionCallContact
             }
@@ -459,7 +463,7 @@ const updateValueInContract = async (valueType, value, publicAddress) => {
                 })
                 .then(gasPrice => {
                     transcationObjectContact.gasPrice = gasPrice;
-                    return web3.eth.accounts.signTransaction(transcationObjectContact, privateKeySign);
+                    return web3.eth.accounts.signTransaction(transcationObjectContact, privateKey);
                 })
                 .then(signedTx => {
                     console.log(`signed transaction: ${signedTx}`);
@@ -480,7 +484,7 @@ const updateValueInContract = async (valueType, value, publicAddress) => {
             // run to create a transcation to set up new value 
             const encodedFunctionCallDob = interface_2_contract.methods.updateDOB(publicAddress, value).encodeABI();
             const transcationObjectDob = {
-                from: account_address,
+                from: publicAddress,
                 to: contractAddress,
                 data: encodedFunctionCallDob
             }
@@ -491,7 +495,7 @@ const updateValueInContract = async (valueType, value, publicAddress) => {
                 })
                 .then(gasPrice => {
                     transcationObjectDob.gasPrice = gasPrice;
-                    return web3.eth.accounts.signTransaction(transcationObjectDob, privateKeySign);
+                    return web3.eth.accounts.signTransaction(transcationObjectDob, privateKey);
                 })
                 .then(signedTx => {
                     console.log(`signed transaction: ${signedTx}`);

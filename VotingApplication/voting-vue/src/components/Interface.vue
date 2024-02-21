@@ -15,22 +15,26 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
+
 const show_dialog = ref(false);
 const username = ref('');
 const password_input = ref('');
 const selected_auth = ref('');
+
 import axios from 'axios';
 import router from '../router';
+
 const props = defineProps(['username', 'email', 'dob', 'contact']);
 
 const privateKey = localStorage.getItem('selectedPrivateKey');
 const publicKey = localStorage.getItem('selectedAccount');
+
 const doc = {
   'username': props.username,
   'email': props.email,
   'dob': props.dob,
   'contact': props.contact,
-  'password': '', // Add the 'password' key here
+  'password': '',
   'privatekey': privateKey,
   'publickey': publicKey
 
@@ -39,10 +43,27 @@ username.value = props.username;
 console.log(username.value);
 
 // define the function for the buttons 
-const open_dialog = (name: string) => {
+const open_dialog = async (name: string) => {
   console.log(name);
   selected_auth.value = name;
-  show_dialog.value = true;
+
+  if (name == 'Login') {
+    show_dialog.value = true;
+    
+  }
+
+  // this should be sending the axios post request witht he data for the initial signup
+  // and in that we would be showing further showup
+  const response = await axios.post(`http://localhost:3002/${selected_auth.value}/InitialSignup`, {
+    doc
+  });
+
+  if (response.status == 200) {
+    show_dialog.value = true;
+  }
+  else {
+    console.log('not been able to complete the initial signup');
+  }
 
 
 }
@@ -56,8 +77,26 @@ const auth_user = async () => {
   doc.password = password_input.value;
 
   try {
+
+    if (selected_auth.value == 'Login') {
+      const response = await axios.post(`http://localhost:3002/${selected_auth.value}`, {
+      doc
+    });
+
+    if (response.status == 200) {
+      router.push({
+        name: 'VotingInterface', params: {
+          'username': props.username,
+          'email': props.email,
+          'dob': props.dob,
+          'contact': props.contact,
+          'password': password_input.value
+        }
+      })
+    }
+    }
     // Send the 'doc' object using Axios POST method
-    const response = await axios.post(`http://localhost:3002/${selected_auth.value}`, {
+    const response = await axios.post(`http://localhost:3002/${selected_auth.value}/FinalSignup`, {
       doc
     });
 
@@ -66,7 +105,7 @@ const auth_user = async () => {
     if (response.status === 200) {
       // push to some other page 
       router.push({
-        name: '/VotingInterface', params: {
+        name: 'VotingInterface', params: {
           'username': props.username,
           'email': props.email,
           'dob': props.dob,

@@ -3,7 +3,8 @@ import Registration
 from web3 import Web3
 
 class SignupUser:
-    def __init__(self, username, gmail, dob, contact, password, privatekey, publickey):
+    def __init__(self, privatekey, publickey):
+    
         self.request_api = "https://goerli.infura.io/v3/b4e87e31b3df4aba9f33d76ec45a139d"
         self.web3 = Web3(Web3.HTTPProvider(self.request_api))
         self.privateKey = privatekey
@@ -16,64 +17,40 @@ class SignupUser:
         self.contract_abi = Registration.contract_abi
 
         self.contract = self.web3.eth.contract(address=self.checksum_address, abi=self.contract_abi)
-        # some call back defined here
-        # or some kind of checkup
-        # we should be checking if the user exist or not 
-
-
-        initial_checkup = self.signup_initial(username,
-                                              gmail, dob, contact)
-        if initial_checkup:
-            final_checkup = self.signup_final(password)
-            if final_checkup:
-                return True
-            else:
-                print("Something wrong happend with final checkup")
-        else:
-            print("Something wrong happend with initial checkup")
+        
 
     def signup_initial(self, username, gmail, dob, contact):
         print(f'data for the initial level signup: {username}, {dob}, {contact}, {gmail}')
         # get the receipt of the register
-        try: 
-            gas_estimate_register = self.contract.functions.registerUser(username, gmail, contact, dob).estimate_gas()
-            print(f'estimate register price for initial register: {gas_estimate_register}')
-            nonce_register = self.web3.eth.get_transaction_count(self.publicKey)
+        
+        gas_estimate_register = self.contract.functions.registerUser(username, gmail, contact, dob).estimate_gas()
+        print(f'estimate register price for initial register: {gas_estimate_register}')
+        nonce_register = self.web3.eth.get_transaction_count(self.publicKey)
             
-            print(f'user data for initial register: {username}, {dob}, {contact}, {gmail}')
-            # transaction for the register of the user
-            transaction_register = self.contract.functions.registerUser(username, gmail, contact, dob).build_transaction({
-                'from': self.publicKey,
-                'gas': int(gas_estimate_register * 2),
-                'gasPrice': self.web3.to_wei('40', 'gwei'),
-                'nonce': nonce_register
-            })
+        print(f'user data for initial register: {username}, {dob}, {contact}, {gmail}')
+        # transaction for the register of the user
+        transaction_register = self.contract.functions.registerUser(username, gmail, contact, dob).build_transaction({
+            'from': self.publicKey,
+            'gas': int(gas_estimate_register * 2),
+            'gasPrice': self.web3.to_wei('40', 'gwei'),
+            'nonce': nonce_register
+        })
 
-            # sign the traansactin object
-            signed_transaction_register = self.web3.eth.account.sign_transaction(transaction_register, self.privateKey)
-            transaction_hash_register = self.web3.eth.send_raw_transaction(signed_transaction_register.rawTransaction)
-            timeout_seconds = 60
-            receipt_register = self.web3.eth.wait_for_transaction_receipt(transaction_hash_register, timeout=timeout_seconds)
-            print(f'receipt register message: {receipt_register}')
+        # sign the traansactin object
+        signed_transaction_register = self.web3.eth.account.sign_transaction(transaction_register, self.privateKey)
+        transaction_hash_register = self.web3.eth.send_raw_transaction(signed_transaction_register.rawTransaction)
+        timeout_seconds = 60
+        receipt_register = self.web3.eth.wait_for_transaction_receipt(transaction_hash_register, timeout=timeout_seconds)
+        print(f'receipt register message: {receipt_register}')
 
-            if receipt_register.status == 0:
-                revert_message = self.web3.eth.call({
-                    'to': receipt_register.contract_address,
-                    'data': receipt_register.input
-                }).hex()
-                print(f'Revert message: {revert_message}')
+        
 
-            # with the use of receipt get the events working 
-            for event in self.contract.events.RegistrationStatusInitialStatus().process_receipt(receipt_register):
-                return event['args']['isRegistered']
+        # with the use of receipt get the events working 
+        for event in self.contract.events.RegistrationStatusInitialStatus().process_receipt(receipt_register):
+            return event['args']['isRegistered']
             
 
-        except ValueError as ve:
-            print(f'value error is: {ve}')
-        except TimeoutError as te:
-            print(f'time out error: {te}')
-        except Exception as e:
-            print(f'an unexpected error occured: {e}')
+        
        
 
     
