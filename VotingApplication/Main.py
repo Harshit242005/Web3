@@ -4,7 +4,7 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS  # Import the CORS extension
 
 from Auth import LoginUser, SignupUser
-
+from Voting import OwnerCheck
 
 app = Flask(__name__)
 CORS(app)
@@ -83,6 +83,27 @@ def FinalSignup():
         print('Error:', str(e))
         return jsonify({'success': False, 'message': 'Error processing data'})  
     
+@app.route('/OwnerCheck', methods=['POST', 'GET'])
+def owner_check():
+    try:
+        data = request.get_json()
+        print(f'Received data is: {data}')
+
+        owner_check_instance = OwnerCheck(
+            publickey=data.get('doc').get('publickey'),
+            privatekey=data.get('doc').get('privatekey')
+        )
+
+        owner_status = owner_check_instance.check_owner()
+        print(f'owner check status value is: {owner_status}')
+        if owner_status:
+            return jsonify({'status': 200, "owner": True})
+        else:
+            return jsonify({"status": 200, "owner": False})
+    except Exception as e:
+        print('some error occuredwhile trying to check uip for owner', e)
+        
+
 
 if __name__ == '__main__':
     # Run the Flask app on port 3002

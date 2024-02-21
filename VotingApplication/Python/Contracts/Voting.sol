@@ -29,9 +29,7 @@ contract Election {
         string name;
         string email;
         string phoneNumber;
-        uint256 age;
-        string gender;
-        string location;
+        string dob;
     }
 
     User[] public aapVotes;
@@ -47,18 +45,14 @@ contract Election {
         string memory _name,
         string memory _email,
         string memory _phoneNumber,
-        uint256 _age,
-        string memory _gender,
-        string memory _location
+        string memory _dob
     ) public hasNotVoted returns (bool) {
         AAP++;
         User memory newUser = User(
             _name,
             _email,
             _phoneNumber,
-            _age,
-            _gender,
-            _location
+            _dob
         );
         aapVotes.push(newUser);
         hasVoted[msg.sender] = true;
@@ -70,18 +64,14 @@ contract Election {
         string memory _name,
         string memory _email,
         string memory _phoneNumber,
-        uint256 _age,
-        string memory _gender,
-        string memory _location
+        string memory _dob
     ) public hasNotVoted returns (bool) {
         BJP++;
         User memory newUser = User(
             _name,
             _email,
             _phoneNumber,
-            _age,
-            _gender,
-            _location
+            _dob
         );
         bjpVotes.push(newUser);
         hasVoted[msg.sender] = true;
@@ -93,18 +83,14 @@ contract Election {
         string memory _name,
         string memory _email,
         string memory _phoneNumber,
-        uint256 _age,
-        string memory _gender,
-        string memory _location
+        string memory _dob
     ) public hasNotVoted returns (bool) {
         CONGRESS++;
         User memory newUser = User(
             _name,
             _email,
             _phoneNumber,
-            _age,
-            _gender,
-            _location
+            _dob
         );
         congressVotes.push(newUser);
         hasVoted[msg.sender] = true;
