@@ -118,15 +118,19 @@ const connectIdentity = async () => {
 
             if (isExist) {
                 console.log('voting application exist in the access list');
-                if (localStorage.getItem('selectedAccount') != null) {
-                    // we would be sending an another axios post method request to get the data needed 
-                    // and we would navigate from here directly if the data e xist to the main interfae page 
-                    const publicKey = localStorage.getItem('selectedAccount');
-                    console.log(`public key is: ${publicKey}`);
+                if (selectedAccount.value != null) {
+                    // show the input value to the user to type in
+                    showPrivateKeyInput.value = true;
+                    localStorage.setItem('selectedAccount', selectedAccount.value);
+                    // i think this is the problem cause for the application
+                    // that's why it's fetching the same details
+                    console.log(`public key is: ${selectedAccount.value}`);
 
-                    const response = await axios.get(`http://localhost:3001/FetchDetails/${publicKey}`);
+                    const response = await axios.get(`http://localhost:3001/FetchDetails/${selectedAccount.value}`);
                     console.log(`username data is: ${response.data.document.username}`);
-                    if (response.status == 200) {
+                    if (response.status == 200 && privateKey.value != null) {
+                        // set private key input value 
+                        localStorage.setItem('selectedPrivateKey', privateKey.value);
                         router.push({
                             name: 'Interface',
                             params: {
@@ -157,13 +161,13 @@ const checkAccess = async () => {
     const response = await axios.post('http://localhost:3001/GetAllowAccess', {
         email: email.value
     });
+
+
     console.log(response);
     if (response.status === 200) {
         const accessList = response.data.allowNames;
         console.log(`Getting the access names list is: ${accessList}`);
-        // if ("Voting Application" in accessList) {
-        //     return true;
-        // }
+        
         if (accessList.includes("Voting Application")) {
             return true;
         }

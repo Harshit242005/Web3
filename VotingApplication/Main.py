@@ -4,7 +4,7 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS  # Import the CORS extension
 
 from Auth import LoginUser, SignupUser
-from Voting import OwnerCheck
+from Voting import OwnerCheck, CheckResult, Vote, AlreadyVoted, Get_Result
 
 app = Flask(__name__)
 CORS(app)
@@ -102,8 +102,74 @@ def owner_check():
             return jsonify({"status": 200, "owner": False})
     except Exception as e:
         print('some error occuredwhile trying to check uip for owner', e)
-        
 
+@app.route('/CheckResults', methods=['POST', 'GET'])    
+def check_results():
+    try:
+        data = request.get_json()
+        print(f'Received data is: {data}')
+
+        result_check_instance = CheckResult(
+            publickey=data.get('doc').get('publickey'),
+            privatekey=data.get('doc').get('privatekey')
+        )
+
+        result_status = result_check_instance.show_results()
+        print(f'result check status value is: {result_status}')
+        if result_status:
+            return jsonify({'status': 200, "results": True})
+        else:
+            return jsonify({"status": 200, "results": False})
+    except Exception as e:
+        print('some error occuredwhile trying to check uip for owner', e)
+
+@app.route('/AlreadyVoted', methods=['POST', 'GET'])
+def already_voted():
+    try:
+        if request.method == 'POST':
+            publickey = request.data.get('publickey')
+            print(f'public key we have received for the voting status check is: {publickey}')
+            voted_status = AlreadyVoted(publickey).alreadyVoted()
+            if voted_status:
+                return jsonify({'status': 200, 'already_voted': True})
+            else:
+                print(f'user with this public key: {publickey} has not been voted yet')
+    except Exception as e:
+        print(f'Error while getting checked if the user has voted or not')
+
+@app.route('/Vote', methods=['POST', 'GET'])
+def Vote():
+    try:
+        data = request.get_json()
+        print(f'Received data is: {data}')
+
+        vote_instance = Vote(
+            publickey=data.get('doc').get('publickey'),
+            privatekey=data.get('doc').get('privatekey'),
+            username = data.get('doc').get('username'),
+            email = data.get('doc').get('email'),
+            dob = data.get('doc').get('dob'),
+            contact = data.get('doc').get('contact'),
+            partyName = data.get('doc').get('partyName')
+        ).vote_party()
+        if vote_instance:
+            return jsonify({'status': 200, 'success': True})
+        else:
+            print('not been able to vote right now')
+
+    except Exception as e:
+        print('some error occuredwhile trying to check uip for owner', e)
+
+# for getting the results 
+@app.route('/GetResult', methods=['POST', 'GET'])
+def GetResults():
+    try:
+        if request.method == 'GET':
+            result = Get_Result().get_results()
+            print(f'result of the election is: {result}')
+            return jsonify({'status': 200, "result_data": result})
+    except Exception as e:
+        print(f'Not been able to get the results: {e}')
 
 if __name__ == '__main__':
     # Run the Flask app on port 3002
