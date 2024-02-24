@@ -47,8 +47,8 @@
 from web3 import Web3
 from VotingData import contract_abi, contract_bytecode
 # Connect to the Goerli network
-goerli_rpc_url = "https://goerli.infura.io/v3/b4e87e31b3df4aba9f33d76ec45a139d"
-web3 = Web3(Web3.HTTPProvider(goerli_rpc_url))
+sepolia_rpc_url = "https://sepolia.infura.io/v3/b4e87e31b3df4aba9f33d76ec45a139d"
+web3 = Web3(Web3.HTTPProvider(sepolia_rpc_url))
 
 
 # # # Replace with your Ethereum account private key
@@ -67,8 +67,8 @@ print(f'current gas price: {current_gas_price}')
 
 transaction = contract.constructor().build_transaction({
     'from': account_address,
-    'gas': int(gas_estimate),
-    'gasPrice': web3.to_wei('20', 'gwei'),
+    'gas': int(gas_estimate * 2),
+    'gasPrice': web3.to_wei('40', 'gwei'),
     'nonce': web3.eth.get_transaction_count(account_address),
 })
 

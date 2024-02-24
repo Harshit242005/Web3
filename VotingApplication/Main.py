@@ -1,5 +1,6 @@
 # here i would run the main flask application to accept routes and other stuff
 
+
 from flask import Flask, request, jsonify
 from flask_cors import CORS  # Import the CORS extension
 
@@ -83,59 +84,41 @@ def FinalSignup():
         print('Error:', str(e))
         return jsonify({'success': False, 'message': 'Error processing data'})  
     
-@app.route('/OwnerCheck', methods=['POST', 'GET'])
-def owner_check():
-    try:
-        data = request.get_json()
-        print(f'Received data is: {data}')
 
-        owner_check_instance = OwnerCheck(
-            publickey=data.get('doc').get('publickey'),
-            privatekey=data.get('doc').get('privatekey')
-        )
+# @app.route('/CheckResults', methods=['GET'])    
+# def check_results():
+#     try:
+#         if request.method == 'GET':
+#             data = request.get_json()
+#             print(f'Received data is: {data}')
 
-        owner_status = owner_check_instance.check_owner()
-        print(f'owner check status value is: {owner_status}')
-        if owner_status:
-            return jsonify({'status': 200, "owner": True})
-        else:
-            return jsonify({"status": 200, "owner": False})
-    except Exception as e:
-        print('some error occuredwhile trying to check uip for owner', e)
+#             result_check_instance = CheckResult(
+#                 publickey=data.get('doc').get('publickey'),
+#                 privatekey=data.get('doc').get('privatekey')
+#             )
 
-@app.route('/CheckResults', methods=['POST', 'GET'])    
-def check_results():
-    try:
-        data = request.get_json()
-        print(f'Received data is: {data}')
+#             result_status = result_check_instance.show_results()
+#             print(f'result check status value is: {result_status}')
+#             if result_status:
+#                 return jsonify({'status': 200, "results": True})
+#             else:
+#                 return jsonify({"status": 200, "results": False})
+#     except Exception as e:
+#         print('some error occuredwhile trying to check uip for owner', e)
 
-        result_check_instance = CheckResult(
-            publickey=data.get('doc').get('publickey'),
-            privatekey=data.get('doc').get('privatekey')
-        )
-
-        result_status = result_check_instance.show_results()
-        print(f'result check status value is: {result_status}')
-        if result_status:
-            return jsonify({'status': 200, "results": True})
-        else:
-            return jsonify({"status": 200, "results": False})
-    except Exception as e:
-        print('some error occuredwhile trying to check uip for owner', e)
-
-@app.route('/AlreadyVoted', methods=['POST', 'GET'])
-def already_voted():
-    try:
-        if request.method == 'POST':
-            publickey = request.data.get('publickey')
-            print(f'public key we have received for the voting status check is: {publickey}')
-            voted_status = AlreadyVoted(publickey).alreadyVoted()
-            if voted_status:
-                return jsonify({'status': 200, 'already_voted': True})
-            else:
-                print(f'user with this public key: {publickey} has not been voted yet')
-    except Exception as e:
-        print(f'Error while getting checked if the user has voted or not')
+# @app.route('/AlreadyVoted', methods=['GET'])
+# def already_voted():
+#     try:
+#         if request.method == 'GET':
+#             publickey = request.args.get('publickey')
+#             print(f'public key we have received for the voting status check is: {publickey}')
+#             voted_status = AlreadyVoted(publickey).alreadyVoted()
+#             if voted_status:
+#                 return jsonify({'status': 200, 'already_voted': True})
+#             else:
+#                 print(f'user with this public key: {publickey} has not been voted yet')
+#     except Exception as e:
+#         print(f'Error while getting checked if the user has voted or not')
 
 @app.route('/Vote', methods=['POST', 'GET'])
 def Vote():

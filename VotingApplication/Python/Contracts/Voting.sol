@@ -9,6 +9,11 @@ contract Election {
         deployerAddress = msg.sender;
     }
 
+    // function to get the deployed address
+    function getDeployedContractAddress() public view returns (address) {
+        return deployerAddress;
+    }
+
     uint256 public AAP;
     uint256 public BJP;
     uint256 public CONGRESS;
@@ -16,10 +21,6 @@ contract Election {
     bool public showResult = false;
 
     mapping(address => bool) public hasVoted;
-
-    function hasExist(address _voter) public view returns (string memory) {
-        return hasVoted[_voter] ? "Already voted" : "Not voted yet";
-    }
 
     function getVotingStatus(address _voter) public view returns (bool) {
         return hasVoted[_voter];

@@ -14,17 +14,9 @@
             </div>
             <div>
                 <button @click="openAccountModal">Connect with metamask</button>
-                <br />
-                <button @click="TypeAccount">Type your own account</button>
             </div>
         </div>
-        <!-- type address on manual -->
-        <div v-if="showTypeAccount" class="TypeAccount">
-            <!-- type your model and account -->
-            <input type="text" v-model="PublicAccount" placeholder="Type account...">
-            <button @click="SaveAccount">Save address</button>
-        </div>
-        <!-- type privatekey of the account you have typed -->
+
 
 
 
@@ -63,10 +55,7 @@
         </div>
 
 
-        <!-- Error message section -->
-        <div v-if="connectionError" class="errorContainer">
-            {{ connectionError }}
-        </div>
+
     </div>
 </template>
   
@@ -76,22 +65,20 @@ import axios from 'axios';
 import router from './router';
 // State variables
 const email = ref('');
-const connectionError = ref('');
-const showSuccessPopup = ref(false); // Added a variable to control the success popup visibility
+
+const showSuccessPopup = ref(false);
 const showAccountModal = ref(false);
 const accounts = ref([]); // Array to store MetaMask accounts
 const selectedAccount = ref('');
-// shwoing related to the private key 
+
+
 const showPrivateKeyInput = ref(false);
 const privateKey = ref('');
+
 const serverResponse = ref('');
 
 const allowConnection = ref(false);
-// inital value for the account typing
-const showTypeAccount = ref(false);
-const PublicAccount = ref('');
 
-// Import using the declared module
 
 
 // Function to connect identity
@@ -100,60 +87,24 @@ const connectIdentity = async () => {
     // and navigate the user directly to the landing / voting page
     console.log(`Sending email is: ${email}`);
     // try to get the public accont as well on condition 
-    try {
-        const response = await axios.post('http://localhost:3001/checkEmail', {
-            data: email.value,
-        });
 
-        console.log(response);
+    const response = await axios.post('http://localhost:3001/checkEmail', {
+        data: email.value,
+    });
 
-        if (response.data.success) {
-            // Set the variable to show the success popup
-            showSuccessPopup.value = true;
-            console.log('email exist in the connection');
+    console.log(`Email status in the check email for the identity verification is: ${response.data.response_boolean_value}`);
 
-            // we have to check for the allow access if the voting application [ name of app ] exist in the 
-            // database for allow connection or not 
-            const isExist = await checkAccess();
+    if (response.data.response_boolean_value) {
+        selectedAccount.value = '';
+        privateKey.value == '';
+        // Set the variable to show the success popup
+        showSuccessPopup.value = true;
+        console.log('email exist in the connection');
 
-            if (isExist) {
-                console.log('voting application exist in the access list');
-                if (selectedAccount.value != null) {
-                    // show the input value to the user to type in
-                    showPrivateKeyInput.value = true;
-                    localStorage.setItem('selectedAccount', selectedAccount.value);
-                    // i think this is the problem cause for the application
-                    // that's why it's fetching the same details
-                    console.log(`public key is: ${selectedAccount.value}`);
 
-                    const response = await axios.get(`http://localhost:3001/FetchDetails/${selectedAccount.value}`);
-                    console.log(`username data is: ${response.data.document.username}`);
-                    if (response.status == 200 && privateKey.value != null) {
-                        // set private key input value 
-                        localStorage.setItem('selectedPrivateKey', privateKey.value);
-                        router.push({
-                            name: 'Interface',
-                            params: {
-                                username: response.data.document.username,
-                                email: response.data.document.email,
-                                dob: response.data.document.dob,
-                                contact: response.data.document.contact
-                            }
-                        });
-                    }
-                }
-            }
-
-            
-        } else {
-            // Set the error message
-            connectionError.value = response.data.message;
-        }
-    } catch (error) {
-        console.error('An error occurred:', error);
-        connectionError.value = 'An error occurred while connecting identity.';
     }
-};
+}
+
 
 // we have to make an function for this to check if the application name exist in the access list
 const checkAccess = async () => {
@@ -167,7 +118,7 @@ const checkAccess = async () => {
     if (response.status === 200) {
         const accessList = response.data.allowNames;
         console.log(`Getting the access names list is: ${accessList}`);
-        
+
         if (accessList.includes("Voting Application")) {
             return true;
         }
@@ -263,55 +214,59 @@ const HideAllowConnection = () => {
     allowConnection.value = false;
 }
 
-const AllowConnection = () => {
-
-    // we would be sending the email and appplication name directly 
-    // Make a request to your server to update the MongoDB collection
+const AllowConnection = async () => {
+    // we would be sending the email and appplication name directly Make a request to your server to update the MongoDB collection
     const serverEndpoint = 'http://localhost:3001/allowConnection';
 
     const selectedEmail = email.value; // Assuming you have the email stored in the ref variable
     console.log(`the email for allow connection is: ${selectedEmail}`);
-    axios.post(serverEndpoint, {
+
+
+    const response = await axios.post(serverEndpoint, {
         email: selectedEmail,
         accessName: 'Voting Application', // Add the name you want to store in the accessList
-    })
-        .then((response) => {
-            console.log('Allow connection successful:', response.data);
-            // we would be receiving some data here in this from the connection side 
-            // that we would be passing to some other component's as props 
-            if (response.status === 200) {
-                // navigating from this side
-                localStorage.setItem('AllowConnection', 'True');
+    });
+    if (response.status === 200) {
+        console.log('voting application is added in the allow access list')
+
+        // we have to check for the allow access if the voting application [ name of app ] exist in the database for allow connection or not 
+        const isExist = await checkAccess();
+        if (isExist) {
+            console.log('voting application exist in the access list');
+
+
+
+            // get the data from this side and run the axios get request here after the checking for the allow button
+            const response = await axios.get(`http://localhost:3001/FetchDetails/${selectedAccount.value}`);
+
+            console.log(`username data is: ${response.data.document.username}`);
+
+            if (response.status == 200) {
+
+                // this should wait until we type the private key in the input box
+                router.push({
+                    name: 'Interface',
+                    params: {
+                        username: response.data.document.username,
+                        email: response.data.document.email,
+                        dob: response.data.document.dob,
+                        contact: response.data.document.contact
+                    }
+                });
             }
+
+
+
             else {
                 console.log(response.data.message);
             }
-
-        })
-        .catch((error) => {
-            console.error('Error allowing connection:', error.message);
-            // Handle errors or show error messages to the user
-        })
-        .finally(() => {
-            // close the last div which is allow the connection for the user 
-            allowConnection.value = false;
-        });
+        }
+    }
+    allowConnection.value = false;
 }
-
-
-const TypeAccount = () => {
-    // we would show up the account for the new user 
-    showTypeAccount.value = true;
-}
-
-const SaveAccount = () => {
-    // saving the account
-    localStorage.setItem('selectedAccount', PublicAccount.value);
-    showTypeAccount.value = false;
-    showPrivateKeyInput.value = true
-}
-
 </script>
+
+
 
 
 <style scoped>

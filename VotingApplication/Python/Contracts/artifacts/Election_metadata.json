@@ -173,6 +173,19 @@
 			},
 			{
 				"inputs": [],
+				"name": "getDeployedContractAddress",
+				"outputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
 				"name": "getElectionResult",
 				"outputs": [
 					{
@@ -287,25 +300,6 @@
 						"internalType": "bool",
 						"name": "",
 						"type": "bool"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "address",
-						"name": "_voter",
-						"type": "address"
-					}
-				],
-				"name": "hasExist",
-				"outputs": [
-					{
-						"internalType": "string",
-						"name": "",
-						"type": "string"
 					}
 				],
 				"stateMutability": "view",
@@ -474,11 +468,11 @@
 	},
 	"sources": {
 		"Python/Contracts/Voting.sol": {
-			"keccak256": "0xebbbf4efefbab3f780dbd9b081041525412c9a455bdb5c5ed11c1b2958c45ef9",
+			"keccak256": "0x4ccf9a8c95d7bb745d77bcd4bc1f41714aaa056d470d872f29aa96aba8ad3b99",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://663f4509afcb0f657dd5b72bef70179700c85339bc0ee6f54b118f34c96bb986",
-				"dweb:/ipfs/QmcS1ojMhokBSUyJCnuo6yjbUmaNSLnQNc8WUN9YgECnnp"
+				"bzz-raw://ecfccb90d2aae6de8724c1b22b978224ed4a0faf2eeab1d747731ae840c79fd8",
+				"dweb:/ipfs/QmdhS6MgwHHibDC4am7Q4ZdpCqQwP6xADo2d5YvLsxA83G"
 			]
 		}
 	},

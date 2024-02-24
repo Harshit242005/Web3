@@ -1,21 +1,29 @@
 from VotingData import contract_abi, contract_bytecode, contract_address
 from web3 import Web3
+
 class OwnerCheck:
-    def __init__(self, publickey, privatekey):
+    def __init__(self, publickey):
         self.goerli_rpc_url = "https://goerli.infura.io/v3/b4e87e31b3df4aba9f33d76ec45a139d"
         self.web3 = Web3(Web3.HTTPProvider(self.goerli_rpc_url))
-        self.contract_checksum_address = self.web3.to_checksum_address(contract_address)
-        self.contract = self.web3.eth.contract(address= self.contract_checksum_address, abi=contract_abi)
-
         self.publicKey = publickey
-        self.privateKey = privatekey
-        
     
     def check_owner(self):
-        if self.publicKey == "0x5780326e9F221afd01253C954b453ccCf4f2F30E":
+        # Convert the hardcoded address to checksum
+        election_board_address = "0x5780326e9F221afd01253C954b453ccCf4f2F30E"
+        check_sum_address = self.web3.to_checksum_address(election_board_address)
+        print(f'Checksum election board address is: {check_sum_address} and the public key is: {self.publicKey}')
+
+        # Convert the provided public key to checksum
+        input_public_key_checksum = self.web3.to_checksum_address(self.publicKey)
+
+        # Compare the checksum addresses
+        if input_public_key_checksum == check_sum_address:
+            print('Typed account is from the election board itself')
             return True
         else:
+            print('Typed account is not from the election board')
             return False
+
         
 
 class CheckResult:
