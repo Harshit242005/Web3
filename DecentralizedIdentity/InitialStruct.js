@@ -371,14 +371,14 @@ const contract_abi = [
 
 
 // address for the contract
-const contractAddress = "0x415065cC7b943E27982772AcefA172d5E292e149";
+const contractAddress = "0x02D943C9389FBEa9aD159d9018981431474c1745";
 // contract remote nodes 
-const web3 = new Web3('https://goerli.infura.io/v3/b4e87e31b3df4aba9f33d76ec45a139d'); 
+const web3 = new Web3('http://localhost:7545'); 
 // contract instance creation
 const interface_1_contract = new web3.eth.Contract(contract_abi, contractAddress);
 // account details 
-const privateKeySign = '7fd14eed812ee800b2e7d536090d5d514a2341bea36b04efba90a8d9abaf94b1';
-const account_address = '0x5780326e9F221afd01253C954b453ccCf4f2F30E'
+const privateKeySign = '0xe49bcbe04943971a6bfa009586c62e53f932e4e6b733a58a878871f1c004ae89';
+const account_address = '0xA19a84eA60BEf6f5695038de0873039a82EEB6b7'
 
 function InitialStruct(publicAddress, email, username, contact, dob, privateKey) {
     // calling the deployed contract function

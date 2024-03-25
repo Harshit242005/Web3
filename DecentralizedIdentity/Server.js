@@ -105,10 +105,10 @@ app.post('/verifyEmailPin', (req, res) => {
 // endpoint to handle the user email and encrypted keys
 app.post('/saveKeys', (req, res) => {
     try {
-        const { email, publicKey, encryptedPrivateKey } = req.body;
+        const { email, publicKey, privateKey } = req.body;
         const storedPrivateKey = "decentralzied";
         // Decrypt the encrypted private key
-        const decryptedPrivateKey = decryptPrivateKey(encryptedPrivateKey, storedPrivateKey);
+        const decryptedPrivateKey = decryptPrivateKey(privateKey, storedPrivateKey);
 
         // Log the decrypted private key to the console
         console.log('Decrypted Private Key:', decryptedPrivateKey);
@@ -189,6 +189,8 @@ app.post('/check', async (req, res) => {
     }
 });
 
+
+
 // creating the user struct creating the endpoint
 app.post('/createStructUser', async (req, res) => {
     // getting the req data
@@ -210,23 +212,6 @@ app.post('/createStructUser', async (req, res) => {
         res.status(500).json({ message: 'Internal server error.' });
     }
 });
-
-// // fecthing the details on the get request
-// app.get('/FetchDetails/:publicKey', async (req, res) => {
-//     const publicKey = req.params.publicKey;
-//     console.log(`public key is ${publicKey}`);
-//     // calling details for functions 
-//     const values = await GetDetails(publicKey);
-//     // creating a object and passing details on it and sending that object as response 
-//     const doc = {
-//         'username': values.username,
-//         'email': values.email,
-//         'dob': values.dob,
-//         'contact': values.contact
-//     }
-//     console.log(doc);
-//     res.status(200).json({ 'document': doc });
-// });
 
 
 

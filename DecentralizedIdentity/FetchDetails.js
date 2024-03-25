@@ -1,8 +1,4 @@
-// here we would be fecthing details that 
-// we have saved in the contract with the help of the inidividual functions
 
-// let's start writing the individual functions for getting each one of the thing and returning them from
-// a given main function
 
 const Web3 = require('web3');
 
@@ -376,11 +372,11 @@ const contract_abi = [
 
 
 // address for the contract
-const contractAddress = "0x415065cC7b943E27982772AcefA172d5E292e149";
+const contractAddress = "0x02D943C9389FBEa9aD159d9018981431474c1745";
 
 // account details that would run this contract functions
 // contract remote nodes 
-const web3 = new Web3('https://goerli.infura.io/v3/b4e87e31b3df4aba9f33d76ec45a139d'); 
+const web3 = new Web3('http://localhost:7545'); 
 // contract instance creation
 const interface_2_contract = new web3.eth.Contract(contract_abi, contractAddress);
 // account details 

@@ -1,9 +1,13 @@
 // Initial checkup for the web3 for the first stage function 
 const Web3 = require('web3');
-require('dotenv').config();
+
 
 // getting connected with the remote node to access the contracts
-const web3 = new Web3('https://goerli.infura.io/v3/b4e87e31b3df4aba9f33d76ec45a139d');
+// const web3 = new Web3('https://goerli.infura.io/v3/b4e87e31b3df4aba9f33d76ec45a139d');
+
+
+// replaced with the localhost network blockchain network
+const web3 = new Web3('http://localhost:7545');
 
 const contractABI = [
     {
@@ -101,8 +105,10 @@ const contractABI = [
         "type": "function"
     }
 ]
-const contractAddress = "0xc270f6f59C2c56ede636669CA6d6e27255B35E8E";
 
+
+// const contractAddress = "0xc270f6f59C2c56ede636669CA6d6e27255B35E8E";
+const contractAddress = "0x86EBc25f04514Bd8f3Dd8c9a8253Dba583B16385";
 const contract = new web3.eth.Contract(contractABI, contractAddress);
 
 // calling up the function
@@ -118,4 +124,5 @@ async function checkEmailExists(email) {
         throw error; // Rethrow the error if needed
     }
 }
+
 module.exports = checkEmailExists;

@@ -98,14 +98,16 @@ const contractABI = [
 ]
 
 
-const contractAddress = '0xc270f6f59c2c56ede636669ca6d6e27255b35e8e';
+// const contractAddress = '0xc270f6f59c2c56ede636669ca6d6e27255b35e8e';
+const contractAddress = '0x86EBc25f04514Bd8f3Dd8c9a8253Dba583B16385';
 
-const web3 = new Web3('https://goerli.infura.io/v3/b4e87e31b3df4aba9f33d76ec45a139d'); 
+const web3 = new Web3('http://localhost:7545'); 
 
 // Create a contract instance
 const myContract = new web3.eth.Contract(contractABI, contractAddress);
-const privateKeySign = '7fd14eed812ee800b2e7d536090d5d514a2341bea36b04efba90a8d9abaf94b1';
-const account_address = '0x5780326e9F221afd01253C954b453ccCf4f2F30E'
+
+const privateKeySign = '0xe49bcbe04943971a6bfa009586c62e53f932e4e6b733a58a878871f1c004ae89';
+const account_address = '0xA19a84eA60BEf6f5695038de0873039a82EEB6b7'
 
 function SaveEmailPrivateKey(privateKeyParam, emailParam) {
     // Encode the function call
