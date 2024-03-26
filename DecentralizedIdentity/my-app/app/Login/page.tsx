@@ -17,7 +17,7 @@ const Login: React.FC = () => {
         ethereum?: any; // Add any type if you know the exact type of ethereum
     }
 
-    // ...
+
 
     useEffect(() => {
         const connectMetamask = async () => {
@@ -114,7 +114,7 @@ const Login: React.FC = () => {
 
     return (
         <div className={styles.mainBody}>
-            <h1>Type Private key for login...</h1>
+            <h1 style={{marginTop: 60}}>Type Private key for login...</h1>
             <p style={{ color: 'red' }}>{invalidKey}</p>
             <div className={styles.mainBody}>
                 {isMatch ? (
@@ -154,13 +154,7 @@ const Login: React.FC = () => {
                     </div>
                 ) : null}
 
-                {/* <input
-                    type="text"
-                    className={styles.privateKeySet}
-                    value={publicKeyToCheck}
-                    onChange={(e) => setPublicKeyToCheck(e.target.value)}
-                    placeholder="Type public key to check..."
-                />  */}
+                
 
                 <input
                     type="text"

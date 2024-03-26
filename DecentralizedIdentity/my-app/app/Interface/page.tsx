@@ -17,9 +17,9 @@ const Interface: React.FC = () => {
     const [publicKey, setPublicKey] = useState('');
     const [privateKey, setPrivateKey] = useState('');
     //const { privateKey, publicKey, setPrivateKey, setPublicKey } = useAppContext(); // Use the context here
-    const [selectedButton, setSelectedButton] = useState<string | null>(null);
+    const [selectedButton, setSelectedButton] = useState<string | null>('Identity');
     // State to track which component to render
-    const [selectedComponent, setSelectedComponent] = useState<string | null>(null);
+    const [selectedComponent, setSelectedComponent] = useState<string | null>('Identity');
     // Function to handle button clicks and set the selected component
     const handleButtonClick = (component: string) => {
         setSelectedComponent(component);

@@ -5,10 +5,11 @@ import { useRouter } from 'next/navigation';
 import { Wallet } from 'ethers';
 import axios from 'axios';
 import { enc, AES } from 'crypto-js';
-
+import { Web3 } from 'web3';
 import styles from './page.module.css';
-import CryptoJS from 'crypto-js';
-import EC from 'elliptic';
+import checkKeys  from '../../../checkKeys';
+import checkEmailExists from '../../../InitialCheckup';
+import checkPrivateKeyExists from '../../../FinalCheckup';
 
 const SignUp: React.FC = () => {
   const [metamaskAccounts, setMetamaskAccounts] = useState<string[]>([]);
@@ -72,20 +73,18 @@ const SignUp: React.FC = () => {
 
 
 
-  const checkOverlap = (privateKey : string, publickey : string) => {
-    const ec = new EC.ec('secp256k1');
   
-    const keyPair = ec.keyFromPrivate(privateKey, 'hex');
-
-   
-    const publicKey = keyPair.getPublic('hex');
-    return publickey == publicKey;
-  }
 
 
   const submitKeysToServer = async () => {
+    const checkKeysBoolean = checkKeys(publicKey, privateKey);
+    const initial_checkup_result = await checkEmailExists(userEmail);
+    const final_checkup = await checkPrivateKeyExists(privateKey);
+    console.log('initial checkup result: ', initial_checkup_result);
+    console.log('check keys boolean value result :' ,checkKeysBoolean);
     // check if the private and public key overlap each other
-    if (checkOverlap(publicKey, privateKey)) {
+    if (initial_checkup_result && final_checkup) {
+    if (checkKeysBoolean) {
       try {
         const encryptedPrivateKey = encryptPrivateKey(privateKey);
         const response = await axios.post('http://localhost:3001/saveKeys', {
@@ -103,11 +102,13 @@ const SignUp: React.FC = () => {
         if (success) {
           // change the state of the next [usestate];
           changeNextState(true);
+          // we should be navigating to some other page 
         }
       } catch (error) {
         console.error('Error:', error);
       }
     }
+  }
   };
 
   const encryptPrivateKey = (privateKey: string) => {
@@ -161,40 +162,10 @@ const SignUp: React.FC = () => {
         onClick={submitKeysToServer}>Submit Keys to Server</button>
 
       <p>or</p>
-      {/* generate key checkup */}
-      {/* <button className={styles.generateKeys} onClick={generateKeys}>Generate keys</button> */}
-      {/* this would be changed to type the private and public key manually */}
+      
       <button className={styles.generateKeys} onClick={() => setManualKeyType(true)}>Manual keys</button>
 
-      {/* {keys && (
-        <div>
-         
-          <div className={styles.publicKey}>
-            <p>Public Key: {keys.publicKey}</p>
-            <button
-              style={{ backgroundColor: copied.publicKey ? 'rgb(51, 245, 100)' : 'inherit' }}
-              onClick={() => copyToClipboard(keys.publicKey, 'publicKey')}
-            >
-              Copy Public Key
-            </button>
-          </div>
-          <div className={styles.privateKey}>
-            <p>Private Key: {keys.privateKey}</p>
-            <button
-              style={{ backgroundColor: copied.privateKey ? 'rgb(51, 245, 100)' : 'inherit' }}
-              onClick={() => copyToClipboard(keys.privateKey, 'privateKey')}
-            >
-              Copy Private Key
-            </button>
-          </div>
-          
-          <button className={`${styles.generateKeys} ${allowmetamask ? styles.hideButton : styles.showButton }`} 
-          onClick={submitKeysToServer}>Submit Keys to Server</button>
-
-          {next && <button className={styles.generateKeys} onClick={Interface}>Interface</button>}
-        </div>
-      )} */}
-
+      
       {/* inputs for public and private keys */}
       {
         manualKey &&

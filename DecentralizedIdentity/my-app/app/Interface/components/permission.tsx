@@ -12,8 +12,8 @@ interface PermissionPros {
 }
 
 const Permission: React.FC<PermissionPros> = ({privateKey, publicKey}) => {
-    const [selectedComponent, setSelectedComponent] = useState<string | null>(null);
-    const [selectedButton, setSelectedButton] = useState<string | null>(null);
+    const [selectedComponent, setSelectedComponent] = useState<string | null>('Access');
+    const [selectedButton, setSelectedButton] = useState<string | null>('Access');
     const handleButtonClick = (component: string) => {
         setSelectedComponent(component);
         setSelectedButton(component);
