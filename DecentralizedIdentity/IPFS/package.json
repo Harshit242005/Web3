@@ -1,0 +1,8 @@
+{
+    "type": "module",
+    "ipfs": "^0.66.1",
+    "dependencies": {
+        "@helia/json": "^3.0.2",
+        "multiformats": "^13.1.0"
+    }
+}

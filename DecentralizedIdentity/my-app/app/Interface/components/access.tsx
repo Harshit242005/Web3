@@ -1,6 +1,7 @@
 'use client';
 import React, { useState, useEffect } from "react";
 import { useInputData } from "@/app/InputDataContext";
+
 import axios from "axios";
 import styles from './access.module.css';
 
@@ -10,15 +11,18 @@ interface IdentityProps {
 }
 
 const Access: React.FC<IdentityProps> = ({ publicKey, privateKey }) => {
-    const { inputData, setInputData } = useInputData();
+    console.log(publicKey);
+    const { inputData, setInputData, cidData, setCidData } = useInputData();
     // use the axios post method to send up the data
-    console.log(`email that we had for this access page is: ${inputData}`);
+    console.log(`cid that we had for this access page is: ${cidData}`);
     // for filling out the names
     const [allowName, SetAllowName] = useState<string[]>([]);
+
+
     useEffect(() => {
         const getAccessNames = async () => {
             const response = await axios.post('http://localhost:3001/GetAllowAccess', {
-                email: inputData
+                CID: cidData
             });
 
             if (response.status === 200) {
@@ -30,7 +34,7 @@ const Access: React.FC<IdentityProps> = ({ publicKey, privateKey }) => {
         }
 
         getAccessNames();
-    }, [inputData]);
+    }, [cidData]);
 
     // function to handle the button which want to make the connection disappear
     const handleButtonClick = async (name: string) => {
@@ -39,14 +43,30 @@ const Access: React.FC<IdentityProps> = ({ publicKey, privateKey }) => {
         // here we would be sending of the name and email to the backend to change the name of the application
         // and put it in the deny list
         const response = await axios.post('http://localhost:3001/AddInDeny', {
-            email: inputData,
+            CID: cidData,
+            publickKey: publicKey,
+            privateKey: privateKey,
             application_name: name
         });
 
         console.log(response)
         if (response.status === 200) {
-            console.log('Application name added to the deny list');
+            // get the new cid value from the response and update with the context cid
+            const newCidValue = response.data.newCid;
+            console.log(`new cid value is: ${newCidValue}`);
+            setCidData(newCidValue);
 
+            // call the function to update cid value in smart contract & values in the interface
+            const newResponse = await axios.post('http://localhost:3001/GetAllowAccess', {
+                CID: newCidValue
+            });
+
+            if (newResponse.status === 200) {
+                SetAllowName(response.data.allowNames);
+            }
+            else {
+                console.log(`we found some error while fetching the names: ${response.data.message}`)
+            }   
         }
     };
 

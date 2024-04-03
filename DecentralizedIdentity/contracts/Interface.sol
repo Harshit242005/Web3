@@ -8,6 +8,7 @@ contract UserRegistry {
         string username;
         string contact;
         string dob;
+        string cid;
     }
 
     mapping(string => User) public users; // Change the mapping key to string
@@ -17,14 +18,17 @@ contract UserRegistry {
     event EmailUpdated(string indexed userAddress, string newEmail, bool success);
     event DOBUpdated(string indexed userAddress, string newDOB, bool success);
     event ContactUpdated(string indexed userAddress, string newContact, bool success);
-
+    event CidUpdated(string indexed userAddress, string newCid, bool success);
+    
+    
     function createUser(
         string memory _userAddress,
         string memory _email,
         string memory _username,
         string memory _contact,
         string memory _dob,
-        string memory _privateKey
+        string memory _privateKey,
+        string memory _cid
     ) public {
         require(bytes(users[_userAddress].userAddress).length == 0, "User already exists");
         require(bytes(privateKeyToPublicKey[_privateKey]).length == 0, "Private key already in use");
@@ -34,7 +38,8 @@ contract UserRegistry {
             email: _email,
             username: _username,
             contact: _contact,
-            dob: _dob
+            dob: _dob,
+            cid: _cid
         });
 
         users[_userAddress] = newUser;
@@ -61,6 +66,18 @@ contract UserRegistry {
     ) public {
         users[_userAddress].username = _newUsername;
         emit UsernameUpdated(_userAddress, _newUsername, true);
+    }
+
+    // get the cid for the user
+    function getCidByAddress(string memory _userAddress) public view returns (string memory) {
+        return users[_userAddress].cid;
+    }
+
+    // function to update the cid of the user with new cid
+    function updateCid(string memory _userAddress, string memory _newCid) public {
+        users[_userAddress].cid = _newCid;
+        // emit a event to retify the correction of the update of the cid
+        emit CidUpdated(_userAddress, _newCid, true);
     }
 
     function getEmailByAddress(

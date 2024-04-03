@@ -12,14 +12,14 @@ interface IdentityProps {
 
 
 const Denied: React.FC<IdentityProps> = ({ publicKey, privateKey }) => {
-    const { inputData, setInputData } = useInputData();
+    const { inputData, setInputData, cidData, setCidData } = useInputData();
 
     // for filling out the names
     const [denyName, SetDenyName] = useState<string[]>([]);
     useEffect(() => {
         const getNotAccessNames = async () => {
             const response = await axios.post('http://localhost:3001/GetDenyAccess', {
-                email: inputData
+                CID: cidData
             });
 
             if (response.status === 200) {
@@ -31,7 +31,7 @@ const Denied: React.FC<IdentityProps> = ({ publicKey, privateKey }) => {
         }
 
         getNotAccessNames();
-    }, [inputData]);
+    }, [cidData]);
 
     const handleButtonClick = async (name: string) => {
 
@@ -39,14 +39,27 @@ const Denied: React.FC<IdentityProps> = ({ publicKey, privateKey }) => {
         // here we would be sending of the name and email to the backend to change the name of the application
         // and put it in the deny list
         const response = await axios.post('http://localhost:3001/AddInAllow', {
-            email: inputData,
+            CID: cidData,
+            publickKey: publicKey,
+            privateKey: privateKey,
             application_name: name
         });
 
-        console.log(response)
+     
         if (response.status === 200) {
-            console.log('Application name added to the deny list');
+            const newCidValue = response.data.newCid;
+            console.log(`new cid value is: ${newCidValue}`);
+            setCidData(newCidValue);
+            const newResponse = await axios.post('http://localhost:3001/GetDenyAccess', {
+                CID: cidData
+            });
 
+            if (newResponse.status === 200) {
+                SetDenyName(response.data.denyNames);
+            }
+            else {
+                console.log(`we found some error while fetching the names: ${response.data.message}`)
+            }
         }
     };
 

@@ -396,14 +396,15 @@ const GetDetails = async (account_address) => {
 
         // Get contact
         const contact = await interface_2_contract.methods.getContactByAddress(account_address).call();
+		const cid = await interface_2_contract.methods.getCidByAddress(account_address).call();
         console.log('Fetching details')
         console.log("Username:", username);
         console.log("Email:", email);
         console.log("Date of Birth:", dob);
         console.log("Contact:", contact);
-        
+        console.log('Cid', cid);
         // Return the values if needed
-        return { username, email, dob, contact };
+        return { username, email, dob, contact, cid };
     } catch (error) {
         console.error("Error getting details:", error);
     }

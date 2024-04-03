@@ -1,0 +1,28 @@
+{
+
+    "type": "commonjs",
+
+    "scripts": {
+
+        "test": "mocha"
+
+    },
+
+    "dependencies": {
+
+        "@helia/strings": "^3.0.2",
+
+        "chai": "^5.1.0",
+
+        "ipfs": "^0.66.1"
+
+    },
+
+    "devDependencies": {
+
+        "ts-node": "^10.9.2"
+
+    }
+
+}
+

@@ -18,6 +18,11 @@ const { GetDetails } = details;
 const updateValue = require('./Update');
 const { updateValueInContract } = updateValue
 
+
+// IPFS scripting 
+const CID = require('./CID');
+const { createCid, getAllowList, getDeniedList, addInAccess, addInDenied } = CID;
+
 const cors = require('cors');
 const app = express();
 
@@ -167,7 +172,7 @@ app.post('/check', async (req, res) => {
     const { PrivateKey } = req.body;
 
     try {
-       
+
 
         // Now you can use the decryptedPrivateKey as needed
         console.log('Private Key:', PrivateKey);
@@ -190,7 +195,7 @@ app.post('/check', async (req, res) => {
 });
 
 
-
+// updating this to pass down a CID string value which would be the initial value 
 // creating the user struct creating the endpoint
 app.post('/createStructUser', async (req, res) => {
     // getting the req data
@@ -200,10 +205,11 @@ app.post('/createStructUser', async (req, res) => {
     const dob = req.body.DOB;
     const publicKey = req.body.PublicKey;
     const privateKey = req.body.PrivateKey;
+    const cid = await createCid(publicKey);
     console.log(fullName, email, contact, dob, publicKey, privateKey)
     try {
         // Call the InitialStruct function
-        const response = await InitialStruct(publicKey, email, fullName, contact, dob, privateKey);
+        const response = await InitialStruct(publicKey, email, fullName, contact, dob, privateKey, cid);
         // Send the response to the client based on the status and message
         res.status(response.status).json({ message: response.message });
     } catch (error) {
@@ -220,7 +226,7 @@ app.get('/FetchDetails/:publicKey', async (req, res) => {
     try {
         const publicKey = req.params.publicKey;
         console.log(`public key is ${publicKey}`);
-        
+
         // Calling details for functions 
         const values = await GetDetails(publicKey);
         console.log(`values that we are fetching are: ${values}`)
@@ -236,7 +242,8 @@ app.get('/FetchDetails/:publicKey', async (req, res) => {
             'username': values.username,
             'email': values.email,
             'dob': values.dob,
-            'contact': values.contact
+            'contact': values.contact,
+            'cid': values.cid
         };
 
         console.log(doc);
@@ -281,6 +288,9 @@ app.post('/updateValue', async (req, res) => {
     // res.status(200).json({'message': 'Value is updated'})
 });
 
+
+
+// change this with the new one of adding the name in the access list with the function and return the new cid
 // handling the connection and allowing the application and saving their details
 app.post('/allowConnection', async (req, res) => {
 
@@ -323,155 +333,226 @@ app.post('/allowConnection', async (req, res) => {
 });
 
 
+
+// get the allow access list for the user using it's CID 
 app.post('/GetAllowAccess', async (req, res) => {
-    // Connection URL and Database Name
-    const url = 'mongodb+srv://agreharshit610:i4ZnXRbFARI4kaSl@taskhandler.u5cgjfw.mongodb.net/';
-    const dbName = 'ApplicationAccess';
-    const collectionName = 'Access';
 
-    const client = await MongoClient.connect(url);
-    const db = client.db(dbName);
-    const collection = db.collection(collectionName);
+    const { CID } = req.body;
+    const AllowList = await getAllowList(CID);
 
-    try {
-        const { email } = req.body;
-        console.log(`Fetching AccessList for email: ${email}`);
+    if (AllowList) {
 
-        // Check if the email exists in any document
-        const existingDocument = await collection.findOne({ email });
+        console.log('AccessList retrieved successfully:', AllowList);
+        res.status(200).json({ success: true, allowNames: AllowList });
+    } else {
 
-        if (existingDocument) {
-            // If the email exists, retrieve the AccessList
-            const accessList = existingDocument.AccessList;
-            console.log('AccessList retrieved successfully:', accessList);
-            res.status(200).json({ success: true, allowNames: accessList });
-        } else {
-            // If the email does not exist, return an empty AccessList
-            console.log('Email not found. No AccessList available.');
-            res.status(200).json({ success: true, accessList: [] });
-        }
-    } catch (error) {
-        console.error('Error fetching AccessList:', error.message);
-        res.status(500).json({ success: false, message: 'Internal server error' });
-    } finally {
-        // Close the MongoDB client
-        client.close();
+        res.status(200).json({ success: true, accessList: [] });
     }
+
 });
+
+
+// // get the allow access list for the user using it's CID 
+// app.post('/GetAllowAccess', async (req, res) => {
+//     // Connection URL and Database Name
+//     const url = 'mongodb+srv://agreharshit610:i4ZnXRbFARI4kaSl@taskhandler.u5cgjfw.mongodb.net/';
+//     const dbName = 'ApplicationAccess';
+//     const collectionName = 'Access';
+
+//     const client = await MongoClient.connect(url);
+//     const db = client.db(dbName);
+//     const collection = db.collection(collectionName);
+
+//     try {
+//         const { email } = req.body;
+//         console.log(`Fetching AccessList for email: ${email}`);
+
+//         // Check if the email exists in any document
+//         const existingDocument = await collection.findOne({ email });
+
+//         if (existingDocument) {
+//             // If the email exists, retrieve the AccessList
+//             const accessList = existingDocument.AccessList;
+//             console.log('AccessList retrieved successfully:', accessList);
+//             res.status(200).json({ success: true, allowNames: accessList });
+//         } else {
+//             // If the email does not exist, return an empty AccessList
+//             console.log('Email not found. No AccessList available.');
+//             res.status(200).json({ success: true, accessList: [] });
+//         }
+//     } catch (error) {
+//         console.error('Error fetching AccessList:', error.message);
+//         res.status(500).json({ success: false, message: 'Internal server error' });
+//     } finally {
+//         // Close the MongoDB client
+//         client.close();
+//     }
+// });
+
 
 
 app.post('/GetDenyAccess', async (req, res) => {
-    // Connection URL and Database Name
-    const url = 'mongodb+srv://agreharshit610:i4ZnXRbFARI4kaSl@taskhandler.u5cgjfw.mongodb.net/';
-    const dbName = 'ApplicationAccess';
-    const collectionName = 'Access';
+    const { CID } = req.body;
+    const deniedList = await getDeniedList(CID);
 
-    const client = await MongoClient.connect(url);
-    const db = client.db(dbName);
-    const collection = db.collection(collectionName);
+    if (deniedList) {
 
-    try {
-        const { email } = req.body;
-        console.log(`Fetching AccessList for email: ${email}`);
+        console.log('AccessList retrieved successfully:', deniedList);
+        res.status(200).json({ success: true, denyNames: deniedList });
+    } else {
 
-        // Check if the email exists in any document
-        const existingDocument = await collection.findOne({ email });
-
-        if (existingDocument) {
-            // If the email exists, retrieve the DeniedList
-            const deniedList = existingDocument.DeniedList;
-            console.log('AccessList retrieved successfully:', deniedList);
-            res.status(200).json({ success: true, denyNames: deniedList });
-        } else {
-            // If the email does not exist, return an empty AccessList
-            console.log('Email not found. No AccessList available.');
-            res.status(200).json({ success: true, accessList: [] });
-        }
-    } catch (error) {
-        console.error('Error fetching AccessList:', error.message);
-        res.status(500).json({ success: false, message: 'Internal server error' });
-    } finally {
-        // Close the MongoDB client
-        client.close();
+        res.status(200).json({ success: true, accessList: [] });
     }
+
 });
+
+
+// app.post('/GetDenyAccess', async (req, res) => {
+//     // Connection URL and Database Name
+//     const url = 'mongodb+srv://agreharshit610:i4ZnXRbFARI4kaSl@taskhandler.u5cgjfw.mongodb.net/';
+//     const dbName = 'ApplicationAccess';
+//     const collectionName = 'Access';
+
+//     const client = await MongoClient.connect(url);
+//     const db = client.db(dbName);
+//     const collection = db.collection(collectionName);
+
+//     try {
+//         const { email } = req.body;
+//         console.log(`Fetching AccessList for email: ${email}`);
+
+//         // Check if the email exists in any document
+//         const existingDocument = await collection.findOne({ email });
+
+//         if (existingDocument) {
+//             // If the email exists, retrieve the DeniedList
+//             const deniedList = existingDocument.DeniedList;
+//             console.log('AccessList retrieved successfully:', deniedList);
+//             res.status(200).json({ success: true, denyNames: deniedList });
+//         } else {
+//             // If the email does not exist, return an empty AccessList
+//             console.log('Email not found. No AccessList available.');
+//             res.status(200).json({ success: true, accessList: [] });
+//         }
+//     } catch (error) {
+//         console.error('Error fetching AccessList:', error.message);
+//         res.status(500).json({ success: false, message: 'Internal server error' });
+//     } finally {
+//         // Close the MongoDB client
+//         client.close();
+//     }
+// });
+
+
+
+// app.post('/AddInDeny', async (req, res) => {
+//     const { email, application_name } = req.body;
+//     console.log(`email: ${email} and the application name is: ${application_name}`);
+//     // connection part for connecting to the database
+//     const url = 'mongodb+srv://agreharshit610:i4ZnXRbFARI4kaSl@taskhandler.u5cgjfw.mongodb.net/';
+//     const dbName = 'ApplicationAccess';
+//     const collectionName = 'Access';
+
+//     const client = await MongoClient.connect(url);
+//     const db = client.db(dbName);
+//     const collection = db.collection(collectionName);
+
+
+//     try {
+//         // Find the document with the matching email
+//         const existingDocument = await collection.findOne({ email });
+
+//         if (existingDocument) {
+//             // Update the document to remove the application_name from AccessList
+//             await collection.updateOne(
+//                 { email },
+//                 {
+//                     $pull: { AccessList: application_name },
+//                     $addToSet: { DeniedList: application_name }
+//                 }
+//             );
+
+//             console.log('Updated document successfully');
+//             res.status(200).json({ success: true, message: 'Updated document successfully' });
+//         } else {
+//             // If the email does not exist, return an error
+//             console.log('Email not found. Cannot update document.');
+//             res.status(404).json({ success: false, message: 'Email not found. Cannot update document.' });
+//         }
+//     } catch (error) {
+//         console.error('Error updating document:', error.message);
+//         res.status(500).json({ success: false, message: 'Internal server error' });
+//     }
+// });
+
+
 
 app.post('/AddInDeny', async (req, res) => {
-    const { email, application_name } = req.body;
-    console.log(`email: ${email} and the application name is: ${application_name}`);
-    // connection part for connecting to the database
-    const url = 'mongodb+srv://agreharshit610:i4ZnXRbFARI4kaSl@taskhandler.u5cgjfw.mongodb.net/';
-    const dbName = 'ApplicationAccess';
-    const collectionName = 'Access';
+    const { CID, publickKey, privateKey, application_name } = req.body;
 
-    const client = await MongoClient.connect(url);
-    const db = client.db(dbName);
-    const collection = db.collection(collectionName);
+    const newCid = await addInDenied(CID, application_name);
+    // update the smart contract as well call the fuunction to update the cid value 
+    await updateValueInContract('cid', newCid, publickKey, privateKey);
+    if (newCid) {
+        res.status(200).json({ success: true, newCid: newCid });
+    } else {
 
-
-    try {
-        // Find the document with the matching email
-        const existingDocument = await collection.findOne({ email });
-
-        if (existingDocument) {
-            // Update the document to remove the application_name from AccessList
-            await collection.updateOne(
-                { email },
-                {
-                    $pull: { AccessList: application_name },
-                    $addToSet: { DeniedList: application_name }
-                }
-            );
-
-            console.log('Updated document successfully');
-            res.status(200).json({ success: true, message: 'Updated document successfully' });
-        } else {
-            // If the email does not exist, return an error
-            console.log('Email not found. Cannot update document.');
-            res.status(404).json({ success: false, message: 'Email not found. Cannot update document.' });
-        }
-    } catch (error) {
-        console.error('Error updating document:', error.message);
-        res.status(500).json({ success: false, message: 'Internal server error' });
+        res.status(404).json({ success: false, newCid: CID });
     }
+
 });
+
+
+// app.post('/AddInAllow', async (req, res) => {
+//     const { email, application_name } = req.body;
+//     console.log(`email: ${email} and the application name is: ${application_name}`);
+//     // connecting with the database 
+//     const url = 'mongodb+srv://agreharshit610:i4ZnXRbFARI4kaSl@taskhandler.u5cgjfw.mongodb.net/';
+//     const dbName = 'ApplicationAccess';
+//     const collectionName = 'Access';
+
+//     const client = await MongoClient.connect(url);
+//     const db = client.db(dbName);
+//     const collection = db.collection(collectionName);
+//     try {
+//         // Find the document with the matching email
+//         const existingDocument = await collection.findOne({ email });
+
+//         if (existingDocument) {
+//             // Update the document to remove the application_name from DeniedList
+//             await collection.updateOne(
+//                 { email },
+//                 {
+//                     $pull: { DeniedList: application_name },
+//                     $addToSet: { AccessList: application_name }
+//                 }
+//             );
+
+//             console.log('Updated document successfully');
+//             res.status(200).json({ success: true, message: 'Updated document successfully' });
+//         } else {
+//             // If the email does not exist, return an error
+//             console.log('Email not found. Cannot update document.');
+//             res.status(404).json({ success: false, message: 'Email not found. Cannot update document.' });
+//         }
+//     } catch (error) {
+//         console.error('Error updating document:', error.message);
+//         res.status(500).json({ success: false, message: 'Internal server error' });
+//     }
+// });
+
 
 
 app.post('/AddInAllow', async (req, res) => {
-    const { email, application_name } = req.body;
-    console.log(`email: ${email} and the application name is: ${application_name}`);
-    // connecting with the database 
-    const url = 'mongodb+srv://agreharshit610:i4ZnXRbFARI4kaSl@taskhandler.u5cgjfw.mongodb.net/';
-    const dbName = 'ApplicationAccess';
-    const collectionName = 'Access';
+    const { CID, publickKey, privateKey, application_name } = req.body;
 
-    const client = await MongoClient.connect(url);
-    const db = client.db(dbName);
-    const collection = db.collection(collectionName);
-    try {
-        // Find the document with the matching email
-        const existingDocument = await collection.findOne({ email });
+    const newCid = await addInAccess(CID, application_name);
+    await updateValueInContract('cid', newCid, publickKey, privateKey);
+    if (newCid) {
+        res.status(200).json({ success: true, newCid: newCid });
+    } else {
 
-        if (existingDocument) {
-            // Update the document to remove the application_name from DeniedList
-            await collection.updateOne(
-                { email },
-                {
-                    $pull: { DeniedList: application_name },
-                    $addToSet: { AccessList: application_name }
-                }
-            );
-
-            console.log('Updated document successfully');
-            res.status(200).json({ success: true, message: 'Updated document successfully' });
-        } else {
-            // If the email does not exist, return an error
-            console.log('Email not found. Cannot update document.');
-            res.status(404).json({ success: false, message: 'Email not found. Cannot update document.' });
-        }
-    } catch (error) {
-        console.error('Error updating document:', error.message);
-        res.status(500).json({ success: false, message: 'Internal server error' });
+        res.status(404).json({ success: false, newCid: newCid });
     }
 });
 

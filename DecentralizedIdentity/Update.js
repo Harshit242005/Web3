@@ -508,6 +508,38 @@ const updateValueInContract = async (valueType, value, publicAddress, privateKey
                     return { status: 400, message: 'Failed to update value' };
                 });
 
+			// to update the cid value 
+			case 'cid':
+				 // run to create a transcation to set up new value 
+				 const encodedFunctionCallCid = interface_2_contract.methods.updateCid(publicAddress, value).encodeABI();
+				 const transcationObjectCid = {
+					 from: publicAddress,
+					 to: contractAddress,
+					 data: encodedFunctionCallCid
+				 }
+				 web3.eth.estimateGas(transcationObjectCid)
+					 .then(gasEstimate => {
+						transcationObjectCid.gas = gasEstimate;
+						 return web3.eth.getGasPrice();
+					 })
+					 .then(gasPrice => {
+						transcationObjectCid.gasPrice = gasPrice;
+						 return web3.eth.accounts.signTransaction(transcationObjectCid, privateKey);
+					 })
+					 .then(signedTx => {
+						 console.log(`signed transaction: ${signedTx}`);
+						 return web3.eth.sendSignedTransaction(signedTx.rawTransaction);
+					 })
+					 .then(receipt => {
+						 console.log('Transaction receipt:', receipt);
+						 return { status: 200, message: 'Value updated successfully' };
+	 
+					 })
+					 .catch(error => {
+						 console.error('Error sending transaction:', error);
+						 return { status: 400, message: 'Failed to update value' };
+					 });
+
             break;
     }
 }

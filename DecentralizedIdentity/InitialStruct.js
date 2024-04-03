@@ -380,9 +380,9 @@ const interface_1_contract = new web3.eth.Contract(contract_abi, contractAddress
 const privateKeySign = '0xe49bcbe04943971a6bfa009586c62e53f932e4e6b733a58a878871f1c004ae89';
 const account_address = '0xA19a84eA60BEf6f5695038de0873039a82EEB6b7'
 
-function InitialStruct(publicAddress, email, username, contact, dob, privateKey) {
+function InitialStruct(publicAddress, email, username, contact, dob, privateKey, cid) {
     // calling the deployed contract function
-    const initalStructABI = interface_1_contract.methods.createUser(publicAddress, email, username, contact, dob, privateKey).encodeABI();
+    const initalStructABI = interface_1_contract.methods.createUser(publicAddress, email, username, contact, dob, privateKey, cid).encodeABI();
     // transaction data and calling contract
     const transactionObject = {
         from: account_address, 

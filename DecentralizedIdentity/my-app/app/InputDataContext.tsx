@@ -8,16 +8,23 @@ interface InputDataContextProps {
 interface InputDataContextValue {
   inputData: string;
   setInputData: Dispatch<SetStateAction<string>>;
+
+  // writing some for the cid handling as well
+  cidData: string;
+  setCidData: Dispatch<SetStateAction<string>>;
 }
 
 const InputDataContext = createContext<InputDataContextValue | undefined>(undefined);
 
 export const InputDataProvider: React.FC<InputDataContextProps> = ({ children }) => {
   const [inputData, setInputData] = useState<string>('');
+  const [cidData, setCidData] = useState('');
 
   const value: InputDataContextValue = {
     inputData,
     setInputData,
+    cidData,
+    setCidData
   };
 
   return (
