@@ -1,10 +1,8 @@
 import { CID } from 'multiformats/cid';
-import { createHelia } from 'helia'
-import { json } from '@helia/json'
+import { createHelia } from  'helia'
+import  { json } from '@helia/json'
 
-
-
-const createCid = async (publicKey) => {
+export const createCid = async (publicKey) => {
     try {
         const helia = await createHelia()
         const j = json(helia)
@@ -24,7 +22,7 @@ const createCid = async (publicKey) => {
 }
 
 // function to add the application name in the access
-const addInAccess = async (cid, name) => {
+export const addInAccess = async (cid, name) => {
     try {
         const helia = await createHelia();
         const j = json(helia);
@@ -44,7 +42,7 @@ const addInAccess = async (cid, name) => {
 
 
 // function to add in denied list
-const addInDenied = async (cid, name) => {
+export const addInDenied = async (cid, name) => {
     try {
         const helia = await createHelia();
         const j = json(helia);
@@ -63,7 +61,7 @@ const addInDenied = async (cid, name) => {
 }
 
 // function to retrieve the list 
-const getAllowList = async (cid) => {
+export const getAllowList = async (cid) => {
     try {
         const helia = await createHelia();
         const j = json(helia);
@@ -77,7 +75,7 @@ const getAllowList = async (cid) => {
     }
 }
 
-const getDeniedList = async (cid) => {
+export const getDeniedList = async (cid) => {
     try {
         const helia = await createHelia();
         const j = json(helia);
@@ -91,10 +89,3 @@ const getDeniedList = async (cid) => {
     }
 }
 
-module.exports = {
-    createCid,
-    addInAccess,
-    addInDenied,
-    getAllowList,
-    getDeniedList
-}

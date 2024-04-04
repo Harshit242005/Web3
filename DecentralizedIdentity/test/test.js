@@ -85,8 +85,9 @@ fs.readdir(buildDir, (err, files) => {
         try {
             // Parse the JSON content to extract the ABI
             const { abi } = JSON.parse(data);
+            console.log(abi);
             // Log the ABI to the console
-            console.log('Type of ABI:', typeof abi);
+            // console.log('Type of ABI:', typeof abi);
           
         } catch (error) {
             console.error('Error parsing JSON content:', error);

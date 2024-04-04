@@ -19,9 +19,11 @@ const updateValue = require('./Update');
 const { updateValueInContract } = updateValue
 
 
-// IPFS scripting 
-const CID = require('./CID');
-const { createCid, getAllowList, getDeniedList, addInAccess, addInDenied } = CID;
+const { createCid, getAllowList, getDeniedList, addInAccess, addInDenied } = require('./IPFS/CID');
+
+// // IPFS scripting 
+// const CID = require('./CID');
+// const { createCid, getAllowList, getDeniedList, addInAccess, addInDenied } = CID;
 
 const cors = require('cors');
 const app = express();

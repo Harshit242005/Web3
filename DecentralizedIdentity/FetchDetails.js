@@ -1,415 +1,182 @@
 
 
+
+// const fs = require('fs');
+// const path = require('path');
+// const Web3 = require('web3');
+
+
+
+// // Path to the build directory of your Truffle project
+// const buildDir = path.resolve(__dirname, './build/contracts');
+// let contract_abi = {} 
+// // Read all files in the build directory
+// fs.readdir(buildDir, (err, files) => {
+//     if (err) {
+//         console.error('Error reading build directory:', err);
+//         return;
+//     }
+
+//     const jsonFiles = files.filter(file => file === 'UserRegistry.json');
+
+   
+
+//     // Check if there are any JSON files
+//     if (jsonFiles.length === 0) {
+//         console.error('No JSON files found in the build directory.');
+//         return;
+//     }
+
+//     // Get the path to the first JSON file
+//     const firstJsonFile = jsonFiles[0];
+//     const filePath = path.join(buildDir, firstJsonFile);
+
+//     // Read the content of the JSON file
+//     fs.readFile(filePath, 'utf8', (err, data) => {
+//         if (err) {
+//             console.error('Error reading JSON file:', err);
+//             return;
+//         }
+
+//         try {
+//             // Parse the JSON content to extract the ABI
+//             const { abi } = JSON.parse(data);
+//             console.log(abi);
+//             contract_abi = abi;
+          
+//         } catch (error) {
+//             console.error('Error parsing JSON content:', error);
+//         }
+//     });
+// });
+
+
+
+
+// // address for the contract
+// const contractAddress = "0xE680F34143E67401e57738ca5fC90Bc7F1960022";
+
+
+// const web3 = new Web3('http://localhost:7545'); 
+// const interface_2_contract = new web3.eth.Contract(contract_abi, contractAddress);
+
+
+// const GetDetails = async (account_address) => {
+//     try {
+//         // Get username
+//         const username = await interface_2_contract.methods.getUsernameByAddress(account_address).call();
+
+//         // Get email
+//         const email = await interface_2_contract.methods.getEmailByAddress(account_address).call();
+
+//         // Get date of birth
+//         const dob = await interface_2_contract.methods.getDOBByAddress(account_address).call();
+
+//         // Get contact
+//         const contact = await interface_2_contract.methods.getContactByAddress(account_address).call();
+// 		const cid = await interface_2_contract.methods.getCidByAddress(account_address).call();
+//         console.log('Fetching details')
+//         console.log("Username:", username);
+//         console.log("Email:", email);
+//         console.log("Date of Birth:", dob);
+//         console.log("Contact:", contact);
+//         console.log('Cid', cid);
+//         // Return the values if needed
+//         return { username, email, dob, contact, cid };
+//     } catch (error) {
+//         console.error("Error getting details:", error);
+//     }
+// }
+
+// module.exports = {
+//     GetDetails
+// }
+
+
+
+
+
+
+const fs = require('fs');
+const path = require('path');
 const Web3 = require('web3');
 
-// contract related details 
-// contract ABI
-const contract_abi = [
-	{
-		"anonymous": false,
-		"inputs": [
-			{
-				"indexed": true,
-				"internalType": "string",
-				"name": "userAddress",
-				"type": "string"
-			},
-			{
-				"indexed": false,
-				"internalType": "string",
-				"name": "newContact",
-				"type": "string"
-			},
-			{
-				"indexed": false,
-				"internalType": "bool",
-				"name": "success",
-				"type": "bool"
-			}
-		],
-		"name": "ContactUpdated",
-		"type": "event"
-	},
-	{
-		"anonymous": false,
-		"inputs": [
-			{
-				"indexed": true,
-				"internalType": "string",
-				"name": "userAddress",
-				"type": "string"
-			},
-			{
-				"indexed": false,
-				"internalType": "string",
-				"name": "newDOB",
-				"type": "string"
-			},
-			{
-				"indexed": false,
-				"internalType": "bool",
-				"name": "success",
-				"type": "bool"
-			}
-		],
-		"name": "DOBUpdated",
-		"type": "event"
-	},
-	{
-		"anonymous": false,
-		"inputs": [
-			{
-				"indexed": true,
-				"internalType": "string",
-				"name": "userAddress",
-				"type": "string"
-			},
-			{
-				"indexed": false,
-				"internalType": "string",
-				"name": "newEmail",
-				"type": "string"
-			},
-			{
-				"indexed": false,
-				"internalType": "bool",
-				"name": "success",
-				"type": "bool"
-			}
-		],
-		"name": "EmailUpdated",
-		"type": "event"
-	},
-	{
-		"anonymous": false,
-		"inputs": [
-			{
-				"indexed": true,
-				"internalType": "string",
-				"name": "userAddress",
-				"type": "string"
-			},
-			{
-				"indexed": false,
-				"internalType": "string",
-				"name": "newUsername",
-				"type": "string"
-			},
-			{
-				"indexed": false,
-				"internalType": "bool",
-				"name": "success",
-				"type": "bool"
-			}
-		],
-		"name": "UsernameUpdated",
-		"type": "event"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "string",
-				"name": "_userAddress",
-				"type": "string"
-			},
-			{
-				"internalType": "string",
-				"name": "_email",
-				"type": "string"
-			},
-			{
-				"internalType": "string",
-				"name": "_username",
-				"type": "string"
-			},
-			{
-				"internalType": "string",
-				"name": "_contact",
-				"type": "string"
-			},
-			{
-				"internalType": "string",
-				"name": "_dob",
-				"type": "string"
-			},
-			{
-				"internalType": "string",
-				"name": "_privateKey",
-				"type": "string"
-			}
-		],
-		"name": "createUser",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "string",
-				"name": "_userAddress",
-				"type": "string"
-			}
-		],
-		"name": "getContactByAddress",
-		"outputs": [
-			{
-				"internalType": "string",
-				"name": "",
-				"type": "string"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "string",
-				"name": "_userAddress",
-				"type": "string"
-			}
-		],
-		"name": "getDOBByAddress",
-		"outputs": [
-			{
-				"internalType": "string",
-				"name": "",
-				"type": "string"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "string",
-				"name": "_userAddress",
-				"type": "string"
-			}
-		],
-		"name": "getEmailByAddress",
-		"outputs": [
-			{
-				"internalType": "string",
-				"name": "",
-				"type": "string"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "string",
-				"name": "_userAddress",
-				"type": "string"
-			}
-		],
-		"name": "getUsernameByAddress",
-		"outputs": [
-			{
-				"internalType": "string",
-				"name": "",
-				"type": "string"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "string",
-				"name": "_privateKey",
-				"type": "string"
-			},
-			{
-				"internalType": "string",
-				"name": "_userAddress",
-				"type": "string"
-			}
-		],
-		"name": "mapPrivateKeyToPublicKey",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "string",
-				"name": "",
-				"type": "string"
-			}
-		],
-		"name": "privateKeyToPublicKey",
-		"outputs": [
-			{
-				"internalType": "string",
-				"name": "",
-				"type": "string"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "string",
-				"name": "_userAddress",
-				"type": "string"
-			},
-			{
-				"internalType": "string",
-				"name": "_newContact",
-				"type": "string"
-			}
-		],
-		"name": "updateContact",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "string",
-				"name": "_userAddress",
-				"type": "string"
-			},
-			{
-				"internalType": "string",
-				"name": "_newDOB",
-				"type": "string"
-			}
-		],
-		"name": "updateDOB",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "string",
-				"name": "_userAddress",
-				"type": "string"
-			},
-			{
-				"internalType": "string",
-				"name": "_newEmail",
-				"type": "string"
-			}
-		],
-		"name": "updateEmail",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "string",
-				"name": "_userAddress",
-				"type": "string"
-			},
-			{
-				"internalType": "string",
-				"name": "_newUsername",
-				"type": "string"
-			}
-		],
-		"name": "updateUsername",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "string",
-				"name": "",
-				"type": "string"
-			}
-		],
-		"name": "users",
-		"outputs": [
-			{
-				"internalType": "string",
-				"name": "userAddress",
-				"type": "string"
-			},
-			{
-				"internalType": "string",
-				"name": "email",
-				"type": "string"
-			},
-			{
-				"internalType": "string",
-				"name": "username",
-				"type": "string"
-			},
-			{
-				"internalType": "string",
-				"name": "contact",
-				"type": "string"
-			},
-			{
-				"internalType": "string",
-				"name": "dob",
-				"type": "string"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	}
-]
+// Function to read contract ABI from JSON file
+function readContractABI() {
+    return new Promise((resolve, reject) => {
+        // Path to the build directory of your Truffle project
+        const buildDir = path.resolve(__dirname, './build/contracts');
 
+        // Read all files in the build directory
+        fs.readdir(buildDir, (err, files) => {
+            if (err) {
+                reject('Error reading build directory:', err);
+                return;
+            }
 
+            const jsonFiles = files.filter(file => file === 'UserRegistry.json');
 
-// address for the contract
-const contractAddress = "0x02D943C9389FBEa9aD159d9018981431474c1745";
+            // Check if there are any JSON files
+            if (jsonFiles.length === 0) {
+                reject('No JSON files found in the build directory.');
+                return;
+            }
 
-// account details that would run this contract functions
-// contract remote nodes 
-const web3 = new Web3('http://localhost:7545'); 
-// contract instance creation
-const interface_2_contract = new web3.eth.Contract(contract_abi, contractAddress);
-// account details 
-// const privateKeySign = '7fd14eed812ee800b2e7d536090d5d514a2341bea36b04efba90a8d9abaf94b1';
-// const account_address = '0x5780326e9F221afd01253C954b453ccCf4f2F30E'
+            // Get the path to the first JSON file
+            const firstJsonFile = jsonFiles[0];
+            const filePath = path.join(buildDir, firstJsonFile);
 
-const GetDetails = async (account_address) => {
+            // Read the content of the JSON file
+            fs.readFile(filePath, 'utf8', (err, data) => {
+                if (err) {
+                    reject('Error reading JSON file:', err);
+                    return;
+                }
+
+                try {
+                    // Parse the JSON content to extract the ABI
+                    const { abi } = JSON.parse(data);
+                    resolve(abi);
+                } catch (error) {
+                    reject('Error parsing JSON content:', error);
+                }
+            });
+        });
+    });
+}
+
+// Export the function after initializing contract ABI
+module.exports = async function GetDetails(account_address) {
     try {
-        // Get username
+        // Read contract ABI
+        const contractABI = await readContractABI();
+
+        // Address for the contract
+        const contractAddress = "0xE680F34143E67401e57738ca5fC90Bc7F1960022";
+
+        // Initialize web3 instance
+        const web3 = new Web3('http://localhost:7545');
+
+        // Create a contract instance
+        const interface_2_contract = new web3.eth.Contract(contractABI, contractAddress);
+
+        // Get details from the contract
         const username = await interface_2_contract.methods.getUsernameByAddress(account_address).call();
-
-        // Get email
         const email = await interface_2_contract.methods.getEmailByAddress(account_address).call();
-
-        // Get date of birth
         const dob = await interface_2_contract.methods.getDOBByAddress(account_address).call();
-
-        // Get contact
         const contact = await interface_2_contract.methods.getContactByAddress(account_address).call();
-		const cid = await interface_2_contract.methods.getCidByAddress(account_address).call();
-        console.log('Fetching details')
+        const cid = await interface_2_contract.methods.getCidByAddress(account_address).call();
+
+        console.log('Fetching details');
         console.log("Username:", username);
         console.log("Email:", email);
         console.log("Date of Birth:", dob);
         console.log("Contact:", contact);
         console.log('Cid', cid);
+
         // Return the values if needed
         return { username, email, dob, contact, cid };
     } catch (error) {
         console.error("Error getting details:", error);
     }
-}
-
-module.exports = {
-    GetDetails
-}
+};
